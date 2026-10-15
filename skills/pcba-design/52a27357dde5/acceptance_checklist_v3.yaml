@@ -1,0 +1,1125 @@
+# PCBA设计全维度验收检查清单 v3.0
+# 完整专业版 — 整合 IPC-7351 / IPC-A-610 / IPC-2221 标准
+# 适用范围: 原理图设计、PCB布局布线、PCBA组装、测试验证全流程
+# 版本: 3.0 | 来源: CS5552-CONNECT-BD 项目实战整合 | 维护: AI Skill Lab
+
+meta:
+  version: "3.0"
+  total_items: 199
+  breakdown:
+    P0_critical: 64  # 致命-必须通过
+    P1_severe: 120   # 严重-必须通过
+    P2_recommend: 15 # 建议-可豁免
+  weights:
+    P0: "致命 — 必须通过, 任何1项FAIL = 整体REJECTED"
+    P1: "严重 — 必须通过, 可豁免但需记录"
+    P2: "建议 — 可豁免, 需评估记录"
+  reference_standards: ["IPC-7351", "IPC-A-610", "IPC-2221", "IPC-2222", "JLCPCB DFM", "Altium DFM"]
+  validation:
+    APPROVED: "所有P0和P1项均为PASS"
+    CONDITIONAL: "所有P0为PASS, 存在P1 FAIL但已记录豁免"
+    REJECTED: "存在任何P0 FAIL"
+
+# ============================================================
+# 一、设计输入与文档完整性 (13 项: P0=6, P1=6, P2=1)
+# ============================================================
+category_1_design_input_documentation:
+  DOC_001:
+    name: "原理图文件是否完整且为最新版本"
+    weight: P0
+    check_method: "版本管理工具比对"
+    pass_criteria: "原理图版本与设计需求一致"
+  DOC_002:
+    name: "PCB源文件是否与原理图同步"
+    weight: P0
+    check_method: "网表比对"
+    pass_criteria: "网表差异为0"
+  DOC_003:
+    name: "Gerber文件 (RS-274X) 是否完整"
+    weight: P0
+    check_method: "检查所有层输出"
+    pass_criteria: "包含所有电气层/阻焊层/丝印层/钻孔层"
+  DOC_004:
+    name: "钻孔文件 (Excellon) 是否齐全"
+    weight: P0
+    check_method: "检查文件存在性"
+    pass_criteria: "包含通孔/盲埋孔所有钻孔数据"
+  DOC_005:
+    name: "层叠结构图 (Stack-up) 是否提供"
+    weight: P0
+    check_method: "检查文件完整性"
+    pass_criteria: "明确标注各层介质厚度/铜厚/阻抗要求"
+  DOC_010:
+    name: "PCB模板是否为最新版本"
+    weight: P0
+    check_method: "比对模板库"
+    pass_criteria: "使用最新批准的PCB设计模板"
+  DOC_006:
+    name: "装配图 (Assembly Drawing) 是否完整"
+    weight: P1
+    check_method: "检查图纸要素"
+    pass_criteria: "包含所有元件位号/方向标识/注释"
+  DOC_007:
+    name: "坐标文件 (Pick & Place) 是否生成"
+    weight: P1
+    check_method: "检查文件格式"
+    pass_criteria: "包含所有SMD元件的X/Y坐标/旋转角度"
+  DOC_008:
+    name: "测试要求文件是否明确"
+    weight: P1
+    check_method: "检查文档"
+    pass_criteria: "ICT/FCT测试需求/治具要求已说明"
+  DOC_009:
+    name: "特殊工艺要求是否标注"
+    weight: P1
+    check_method: "检查文档"
+    pass_criteria: "阻抗控制/特殊材料/特殊表面处理已说明"
+  DOC_011:
+    name: "设计是否遵循公司PCB设计规范"
+    weight: P1
+    check_method: "规范逐条对照"
+    pass_criteria: "无违反强制性规范条目"
+  DOC_012:
+    name: "设计变更需求是否明确记录"
+    weight: P1
+    check_method: "检查变更日志"
+    pass_criteria: "所有设计变更均有可追溯记录"
+  DOC_013:
+    name: "标准化要求是否满足"
+    weight: P2
+    check_method: "规范对照"
+    pass_criteria: "元件命名/层命名/文档命名统一"
+
+# ============================================================
+# 二、原理图设计审查 (16 项: P0=9, P1=6, P2=1)
+# ============================================================
+category_2_schematic_design_review:
+  SCH_001:
+    name: "电源网络是否完整连接"
+    weight: P0
+    check_method: "网表分析"
+    pass_criteria: "所有VCC/VDD网络无悬空引脚"
+  SCH_002:
+    name: "地网络是否完整连接"
+    weight: P0
+    check_method: "网表分析"
+    pass_criteria: "所有GND网络无悬空引脚"
+  SCH_004:
+    name: "未连接引脚是否已正确处理"
+    weight: P0
+    check_method: "DRC检查"
+    pass_criteria: "所有NC引脚已标注或正确处理"
+  SCH_005:
+    name: "总线连接是否完整无误"
+    weight: P0
+    check_method: "视觉+DRC检查"
+    pass_criteria: "总线分支无错位/无遗漏"
+  SCH_006:
+    name: "所有元件是否有唯一位号"
+    weight: P0
+    check_method: "BOM比对"
+    pass_criteria: "位号无重复/无空缺"
+  SCH_008:
+    name: "元件耐压值是否满足电路要求"
+    weight: P0
+    check_method: "电压裕量计算"
+    pass_criteria: "≥1.5倍工作电压"
+  SCH_009:
+    name: "元件功率额定值是否满足要求"
+    weight: P0
+    check_method: "功率计算"
+    pass_criteria: "≥2倍实际功耗"
+  SCH_013:
+    name: "所有对外接口是否有ESD保护"
+    weight: P0
+    check_method: "电路拓扑检查"
+    pass_criteria: "板边接口数据线均有TVS管钳位"
+  SCH_014:
+    name: "连接器引脚定义是否与配套设备匹配"
+    weight: P0
+    check_method: "引脚对照"
+    pass_criteria: "与对接连接器引脚一一对应"
+  SCH_015:
+    name: "接口信号电平是否匹配"
+    weight: P0
+    check_method: "电平分析"
+    pass_criteria: "无5V与3.3V直接连接(无电平转换)"
+  SCH_003:
+    name: "单点网络是否合理"
+    weight: P1
+    check_method: "网表报告检查"
+    pass_criteria: "确认每个单点网络为有意设计"
+  SCH_007:
+    name: "元件参数值是否合理标注"
+    weight: P1
+    check_method: "参数检查"
+    pass_criteria: "阻容感值/IC型号完整准确"
+  SCH_010:
+    name: "元件温度等级是否满足环境要求"
+    weight: P1
+    check_method: "规格书核对"
+    pass_criteria: "工作温度范围覆盖应用环境"
+  SCH_012:
+    name: "关键器件是否有替代方案"
+    weight: P1
+    check_method: "供应风险评估"
+    pass_criteria: "非独供或已注明替代料"
+  SCH_016:
+    name: "调试/编程接口是否预留"
+    weight: P1
+    check_method: "接口检查"
+    pass_criteria: "SWD/JTAG/UART等调试接口已预留"
+  SCH_011:
+    name: "是否优先选用标准封装元件"
+    weight: P2
+    check_method: "封装库检查"
+    pass_criteria: "避免异形或定制化封装"
+
+# ============================================================
+# 三、PCB裸板可制造性 DFM (58 项: P0=16, P1=36, P2=6)
+# ============================================================
+category_3_pcb_fabrication_dfm:
+  PCB_006:
+    name: "阻抗控制叠层是否与板厂确认"
+    weight: P0
+    check_method: "板厂确认"
+    pass_criteria: "叠层方案经板厂复核"
+  PCB_010:
+    name: "最小线宽是否≥板厂能力"
+    weight: P0
+    check_method: "遍历所有走线"
+    pass_criteria: "≥板厂最小能力(常规≥4mil/0.1mm)"
+  PCB_011:
+    name: "最小线距是否≥板厂能力"
+    weight: P0
+    check_method: "间距检测"
+    pass_criteria: "≥板厂最小间距(常规≥4mil/0.1mm)"
+  PCB_012:
+    name: "阻抗线是否按板厂补偿值设计"
+    weight: P0
+    check_method: "阻抗计算核对"
+    pass_criteria: "线宽已按板厂补偿调整"
+  PCB_017:
+    name: "走线是否100%完成"
+    weight: P0
+    check_method: "布线率检查"
+    pass_criteria: "无未布线网络"
+  PCB_019:
+    name: "最小机械钻孔孔径是否≥板厂能力"
+    weight: P0
+    check_method: "孔径检查"
+    pass_criteria: "≥0.2mm"
+  PCB_020:
+    name: "最小激光钻孔孔径是否≥板厂能力"
+    weight: P0
+    check_method: "孔径检查"
+    pass_criteria: "≥0.1mm"
+  PCB_021:
+    name: "孔环(焊盘环宽)是否≥0.1mm"
+    weight: P0
+    check_method: "孔环计算"
+    pass_criteria: "≥0.1mm"
+  PCB_025:
+    name: "盘中孔是否已避免"
+    weight: P0
+    check_method: "孔位检查"
+    pass_criteria: "禁止在SMD焊盘上打孔"
+  PCB_034:
+    name: "焊盘是否完整开窗"
+    weight: P0
+    check_method: "开窗检查"
+    pass_criteria: "无油墨覆盖焊盘"
+  PCB_040:
+    name: "板框是否为闭合轮廓"
+    weight: P0
+    check_method: "轮廓检测"
+    pass_criteria: "无缺口/无重叠"
+  PCB_045:
+    name: "工艺边内是否有元件或走线"
+    weight: P0
+    check_method: "禁布区检查"
+    pass_criteria: "工艺边内无元件/走线"
+  PCB_048:
+    name: "定位孔是否有元件遮挡"
+    weight: P0
+    check_method: "遮挡检查"
+    pass_criteria: "无元件遮挡"
+  PCB_052:
+    name: "V-cut线是否避开铜箔和过孔"
+    weight: P0
+    check_method: "路径检查"
+    pass_criteria: "V-cut线无铜箔/过孔"
+  SMT_010:
+    name: "接地层通孔焊盘是否有热风焊盘"
+    weight: P0
+    check_method: "焊盘检查"
+    pass_criteria: "防止冷焊"
+  PCB_001:
+    name: "层叠结构是否对称"
+    weight: P1
+    check_method: "层叠分析"
+    pass_criteria: "避免翘曲,芯板与PP片对称分布"
+  PCB_002:
+    name: "板材选择是否合理"
+    weight: P1
+    check_method: "材料核对"
+    pass_criteria: "高频信号用低损耗材料,普通板用FR-4"
+  PCB_003:
+    name: "板材CTE是否与元件匹配"
+    weight: P1
+    check_method: "参数比对"
+    pass_criteria: "差异≤15ppm/℃"
+  PCB_004:
+    name: "PCB尺寸是否与SMT产线兼容"
+    weight: P1
+    check_method: "尺寸检查"
+    pass_criteria: "长宽比≤5:1"
+  PCB_005:
+    name: "PCB厚度公差是否可控"
+    weight: P1
+    check_method: "公差检查"
+    pass_criteria: "控制在±0.05mm内"
+  PCB_007:
+    name: "各层铜箔覆盖率是否均衡"
+    weight: P1
+    check_method: "铜箔分析"
+    pass_criteria: "差异<20%,大面积空白添加平衡铜块"
+  PCB_008:
+    name: "孤岛铜皮是否已处理"
+    weight: P1
+    check_method: "铜皮检查"
+    pass_criteria: "已删除或接地"
+  PCB_009:
+    name: "板边5mm内是否有铜皮"
+    weight: P1
+    check_method: "禁布区检查"
+    pass_criteria: "板边5mm内无铜皮"
+  PCB_013:
+    name: "差分线间距是否全程一致"
+    weight: P1
+    check_method: "差分对分析"
+    pass_criteria: "间距恒定,无突变"
+  PCB_014:
+    name: "线与焊盘间距是否≥0.1mm"
+    weight: P1
+    check_method: "间距检测"
+    pass_criteria: "≥0.1mm"
+  PCB_015:
+    name: "是否避免90°直角拐弯"
+    weight: P1
+    check_method: "角度检测"
+    pass_criteria: "高速信号用弧形或45°拐角"
+  PCB_016:
+    name: "差分线拐弯是否对称"
+    weight: P1
+    check_method: "差分对分析"
+    pass_criteria: "拐弯方式一致"
+  PCB_018:
+    name: "电源平面分割是否合理"
+    weight: P1
+    check_method: "平面分析"
+    pass_criteria: "无狭长通道,载流能力满足要求"
+  PCB_022:
+    name: "过孔与过孔间距是否≥0.3mm"
+    weight: P1
+    check_method: "间距检测"
+    pass_criteria: "≥0.3mm"
+  PCB_023:
+    name: "孔到板边距离是否≥0.5mm"
+    weight: P1
+    check_method: "距离检测"
+    pass_criteria: "≥0.5mm"
+  PCB_024:
+    name: "孔到铜皮距离是否≥0.3mm"
+    weight: P1
+    check_method: "距离检测"
+    pass_criteria: "≥0.3mm"
+  PCB_026:
+    name: "盲孔深径比是否≤1:1"
+    weight: P1
+    check_method: "深径比计算"
+    pass_criteria: "≤1:1"
+  PCB_027:
+    name: "埋孔是否被内层铜环包围"
+    weight: P1
+    check_method: "内层检查"
+    pass_criteria: "埋孔有完整铜环"
+  PCB_028:
+    name: "过孔内壁铜厚是否≥20μm"
+    weight: P1
+    check_method: "工艺确认"
+    pass_criteria: "≥20μm"
+  PCB_029:
+    name: "散热过孔是否做了树脂塞孔+电镀填平"
+    weight: P1
+    check_method: "工艺确认"
+    pass_criteria: "散热焊盘下过孔已处理"
+  PCB_030:
+    name: "过孔处理方式是否明确"
+    weight: P1
+    check_method: "工艺标注"
+    pass_criteria: "明确标注处理方式"
+  PCB_031:
+    name: "IC引脚间阻焊桥宽度是否足够"
+    weight: P1
+    check_method: "阻焊桥测量"
+    pass_criteria: "≥0.08-0.1mm"
+  PCB_032:
+    name: "BGA区域阻焊桥是否完整"
+    weight: P1
+    check_method: "BGA区域检查"
+    pass_criteria: "阻焊桥无断裂"
+  PCB_033:
+    name: "相邻焊盘间是否有阻焊隔离"
+    weight: P1
+    check_method: "间距检查"
+    pass_criteria: "不同网络焊盘间有阻焊"
+  PCB_035:
+    name: "测试点是否开窗"
+    weight: P1
+    check_method: "开窗检查"
+    pass_criteria: "测试点已开窗"
+  PCB_036:
+    name: "散热焊盘是否开窗"
+    weight: P1
+    check_method: "开窗检查"
+    pass_criteria: "散热焊盘已开窗"
+  PCB_037:
+    name: "阻焊开窗是否比焊盘单边大0.05-0.1mm"
+    weight: P1
+    check_method: "尺寸测量"
+    pass_criteria: "单边大0.05-0.1mm"
+  PCB_041:
+    name: "板框线宽是否≥0.1mm"
+    weight: P1
+    check_method: "线宽测量"
+    pass_criteria: "≥0.1mm"
+  PCB_042:
+    name: "板内开槽是否单独标注"
+    weight: P1
+    check_method: "标注检查"
+    pass_criteria: "开槽位置/尺寸已标注"
+  PCB_043:
+    name: "板框是否有内直角或锐角"
+    weight: P1
+    check_method: "角度检测"
+    pass_criteria: "内角≥90度"
+  PCB_044:
+    name: "工艺边是否添加(宽度≥5mm)"
+    weight: P1
+    check_method: "工艺边检查"
+    pass_criteria: "≥5mm"
+  PCB_046:
+    name: "工艺边上是否添加光学定位点"
+    weight: P1
+    check_method: "定位点检查"
+    pass_criteria: "至少3个"
+  PCB_047:
+    name: "定位孔是否添加(3-4个,孔径2-3mm)"
+    weight: P1
+    check_method: "定位孔检查"
+    pass_criteria: "3-4个,位于板角"
+  PCB_049:
+    name: "PCB边缘与元件间距是否≥2mm"
+    weight: P1
+    check_method: "间距检查"
+    pass_criteria: "≥2mm"
+  PCB_050:
+    name: "PCB角落至元件距离是否≥2mm"
+    weight: P1
+    check_method: "距离检查"
+    pass_criteria: "≥2mm"
+  PCB_051:
+    name: "拼板方式是否明确"
+    weight: P1
+    check_method: "拼板标注检查"
+    pass_criteria: "V-cut或邮票孔方式已明确标注"
+  PCB_053:
+    name: "邮票孔孔径是否合理"
+    weight: P1
+    check_method: "孔径检查"
+    pass_criteria: "1.0-1.2mm"
+  PCB_054:
+    name: "邮票孔间距是否合理"
+    weight: P1
+    check_method: "间距检查"
+    pass_criteria: "0.8-1.0mm"
+  PCB_055:
+    name: "表面处理类型是否适合产品需求"
+    weight: P1
+    check_method: "选型确认"
+    pass_criteria: "HASL/ENIG/OSP/沉银/沉锡选型合理"
+  PCB_056:
+    name: "细间距BGA是否避免使用HASL"
+    weight: P1
+    check_method: "工艺匹配"
+    pass_criteria: "细间距BGA用ENIG"
+  PCB_057:
+    name: "金手指是否使用硬金"
+    weight: P1
+    check_method: "工艺确认"
+    pass_criteria: "金手指用电镀硬金"
+  PCB_058:
+    name: "金手指是否做倒角处理"
+    weight: P1
+    check_method: "外形检查"
+    pass_criteria: "金手指已倒角"
+  PCB_038:
+    name: "阻焊颜色是否与客户要求一致"
+    weight: P2
+    check_method: "颜色确认"
+    pass_criteria: "与要求一致"
+  PCB_039:
+    name: "阻焊层厚度是否在0.01-0.02mm范围内"
+    weight: P2
+    check_method: "厚度确认"
+    pass_criteria: "0.01-0.02mm"
+
+# ============================================================
+# 四、PCBA组装可制造性 DFA (25 项: P0=7, P1=16, P2=2)
+# ============================================================
+category_4_pcba_assembly_dfa:
+  DFA_001:
+    name: "BOM中封装型号是否与PCB焊盘设计匹配"
+    weight: P0
+    check_method: "BOM↔PCB交叉比对"
+    pass_criteria: "100%匹配"
+  DFA_003:
+    name: "焊盘形状是否与元件引脚匹配"
+    weight: P0
+    check_method: "形状比对"
+    pass_criteria: "避免椭圆形焊盘"
+  DFA_007:
+    name: "元件间距是否≥0.5mm"
+    weight: P0
+    check_method: "间距检测"
+    pass_criteria: "≥0.5mm(满足贴片机精度)"
+  DFA_017:
+    name: "极性器件标识是否清晰无误"
+    weight: P0
+    check_method: "标识检查"
+    pass_criteria: "二极管/电解电容/IC方向明确"
+  DFA_018:
+    name: "连接器位置和方向是否符合整机组装需求"
+    weight: P0
+    check_method: "机械装配检查"
+    pass_criteria: "空间/插拔方向合理"
+  DFA_020:
+    name: "波峰焊面是否有BGA/QFN器件"
+    weight: P0
+    check_method: "面属性检查"
+    pass_criteria: "Bottom层无BGA/QFN或标注选择焊"
+  SILK_005:
+    name: "极性标识是否清晰可辨"
+    weight: P0
+    check_method: "可视性检查"
+    pass_criteria: "二极管/电解电容方向明确"
+  DFA_002:
+    name: "焊盘尺寸是否符合IPC-7351标准"
+    weight: P1
+    check_method: "标准对照"
+    pass_criteria: "符合IPC-7351"
+  DFA_004:
+    name: "焊盘尺寸是否比元件引脚大10%-15%"
+    weight: P1
+    check_method: "尺寸计算"
+    pass_criteria: "大10%-15%"
+  DFA_005:
+    name: "封装准确性是否经交叉核对"
+    weight: P1
+    check_method: "审核记录"
+    pass_criteria: "关键封装经两人核对"
+  DFA_006:
+    name: "焊盘对称设计是否合理"
+    weight: P1
+    check_method: "对称性检查"
+    pass_criteria: "避免焊接偏移"
+  DFA_008:
+    name: "元件垂直方向间距是否≥1.5mm"
+    weight: P1
+    check_method: "间距检测"
+    pass_criteria: "≥1.5mm"
+  DFA_009:
+    name: "BGA器件周边是否预留≥3mm禁布区"
+    weight: P1
+    check_method: "禁布区检查"
+    pass_criteria: "≥3mm"
+  DFA_010:
+    name: "高密度区域是否做热仿真"
+    weight: P1
+    check_method: "热仿真报告"
+    pass_criteria: "已做热仿真"
+  DFA_011:
+    name: "高功耗元件与散热器间距是否≥5mm"
+    weight: P1
+    check_method: "间距检查"
+    pass_criteria: "≥5mm"
+  DFA_012:
+    name: "高功耗元件与热敏感元件间距是否≥5mm"
+    weight: P1
+    check_method: "间距检查"
+    pass_criteria: "≥5mm"
+  DFA_013:
+    name: "元件与测试点间距是否≥3mm"
+    weight: P1
+    check_method: "间距检查"
+    pass_criteria: "≥3mm"
+  DFA_014:
+    name: "大型器件周围是否预留贴装吸嘴空间"
+    weight: P1
+    check_method: "空间检查"
+    pass_criteria: "高度>5mm器件周围≥1mm间距"
+  DFA_015:
+    name: "元件边缘到板边距离是否≥1.5mm"
+    weight: P1
+    check_method: "距离检查"
+    pass_criteria: "≥1.5mm"
+  DFA_016:
+    name: "同类元件方向是否一致"
+    weight: P1
+    check_method: "方向检查"
+    pass_criteria: "避免贴片机频繁换向"
+  DFA_019:
+    name: "重器件布局是否合理"
+    weight: P1
+    check_method: "机械应力分析"
+    pass_criteria: "考虑振动/冲击应力"
+  DFA_021:
+    name: "潮敏元件是否标注MSL等级"
+    weight: P1
+    check_method: "标注检查"
+    pass_criteria: "MSL1-4级已标注"
+  DFA_022:
+    name: "需屏蔽罩的位置是否预留空间和焊盘"
+    weight: P1
+    check_method: "空间检查"
+    pass_criteria: "屏蔽罩位置已预留"
+  DFA_023:
+    name: "特殊器件是否确认供应风险"
+    weight: P1
+    check_method: "供应评估"
+    pass_criteria: "风险已评估"
+  DFA_024:
+    name: "元件高度是否≤2.5mm"
+    weight: P2
+    check_method: "高度检查"
+    pass_criteria: "≤2.5mm(回流焊炉膛限制)"
+  DFA_025:
+    name: "元件重量是否≤1g/元件"
+    weight: P2
+    check_method: "重量检查"
+    pass_criteria: "≤1g(避免贴片脱落)"
+
+# ============================================================
+# 五、焊接工艺适配性 (19 项: P0=2, P1=17)
+# ============================================================
+category_5_soldering_process:
+  SMT_002:
+    name: "热敏感元件与热源间距是否≥5mm"
+    weight: P0
+    check_method: "间距检查"
+    pass_criteria: "≥5mm"
+  SMT_003:
+    name: "焊盘间距是否≥0.3mm"
+    weight: P0
+    check_method: "间距检测"
+    pass_criteria: "≥0.3mm(避免锡桥)"
+  SMT_001:
+    name: "回流焊温度曲线要求是否明确"
+    weight: P1
+    check_method: "工艺文件检查"
+    pass_criteria: "有铅/无铅/特殊器件曲线已明确"
+  SMT_004:
+    name: "焊盘宽度是否≥0.2mm"
+    weight: P1
+    check_method: "宽度测量"
+    pass_criteria: "≥0.2mm"
+  SMT_005:
+    name: "0402/0201等小封装焊盘间距是否≥0.2mm"
+    weight: P1
+    check_method: "间距检测"
+    pass_criteria: "≥0.2mm(防止回流焊桥接)"
+  SMT_006:
+    name: "QFN/BGA焊盘尺寸偏差是否在±0.05mm内"
+    weight: P1
+    check_method: "尺寸比对"
+    pass_criteria: "≤±0.05mm"
+  SMT_007:
+    name: "波峰焊器件布局方向是否合理"
+    weight: P1
+    check_method: "方向检查"
+    pass_criteria: "避免阴影效应"
+  SMT_008:
+    name: "波峰焊托盘设计是否可行"
+    weight: P1
+    check_method: "可制造性评估"
+    pass_criteria: "托盘方案已确认"
+  SMT_009:
+    name: "通孔连接器与相邻SMD间距是否≥2mm"
+    weight: P1
+    check_method: "间距检测"
+    pass_criteria: "≥2mm(选择焊喷嘴空间)"
+  SMT_011:
+    name: "钢网开孔设计是否合理"
+    weight: P1
+    check_method: "开孔计算"
+    pass_criteria: "面积比≥0.66"
+  SMT_012:
+    name: "钢网厚度选择是否合理"
+    weight: P1
+    check_method: "厚度确认"
+    pass_criteria: "0.1-0.15mm"
+  SMT_013:
+    name: "QFN等底部焊盘器件是否采用阶梯钢网"
+    weight: P1
+    check_method: "工艺确认"
+    pass_criteria: "阶梯钢网设计"
+  SMT_014:
+    name: "钢网开孔尺寸是否比焊盘大10-15%"
+    weight: P1
+    check_method: "尺寸计算"
+    pass_criteria: "大10-15%"
+  SMT_015:
+    name: "锡膏选型是否适合器件和工艺"
+    weight: P1
+    check_method: "选型确认"
+    pass_criteria: "Fine Pitch用Type 4锡膏"
+  SMT_016:
+    name: "点胶(Underfill)需求是否评估"
+    weight: P1
+    check_method: "需求评估"
+    pass_criteria: "BGA/CSP等已评估"
+  SMT_017:
+    name: "三防漆需求是否评估"
+    weight: P1
+    check_method: "需求评估"
+    pass_criteria: "已评估并明确区域"
+  SMT_018:
+    name: "板面清洁度要求是否明确"
+    weight: P1
+    check_method: "工艺文件"
+    pass_criteria: "免清洗/需要清洗已明确"
+  SMT_019:
+    name: "通孔回流焊器件焊盘和孔径是否合理"
+    weight: P1
+    check_method: "设计检查"
+    pass_criteria: "符合通孔回流焊要求"
+
+# ============================================================
+# 六、功能设计与失效模式分析 DFMEA (24 项: P0=12, P1=10, P2=2)
+# ============================================================
+category_6_functional_dfmea:
+  FMEA_001:
+    name: "每个IC电源引脚是否在2mm内配有≥0.1μF去耦电容"
+    weight: P0
+    check_method: "电源网络分析"
+    pass_criteria: "每个VCC/GND对有去耦电容,距离<2mm"
+  FMEA_002:
+    name: "电源平面载流能力是否满足要求"
+    weight: P0
+    check_method: "载流计算"
+    pass_criteria: "铜厚+线宽满足最大电流+温升要求"
+  FMEA_005:
+    name: "大电流路径是否有足够的铜箔宽度"
+    weight: P0
+    check_method: "载流计算"
+    pass_criteria: "满足载流需求"
+  FMEA_006:
+    name: "热焊盘连接是否合理(非直接全连接)"
+    weight: P0
+    check_method: "焊盘检查"
+    pass_criteria: "通过Thermal Relief spokes连接"
+  FMEA_007:
+    name: "高速信号是否有完整的参考平面"
+    weight: P0
+    check_method: "参考层检查"
+    pass_criteria: "有完整地平面作为参考"
+  FMEA_008:
+    name: "高速差分对是否等长"
+    weight: P0
+    check_method: "差分对测量"
+    pass_criteria: "对内误差<5mil"
+  FMEA_009:
+    name: "高速信号是否避免跨分割区"
+    weight: P0
+    check_method: "走线路径检查"
+    pass_criteria: "无跨电源/地平面分割"
+  FMEA_011:
+    name: "晶振负载电容是否匹配"
+    weight: P0
+    check_method: "参数计算"
+    pass_criteria: "电容值偏差≤±5%"
+  FMEA_015:
+    name: "模拟地(AGND)与数字地(DGND)是否单点隔离"
+    weight: P0
+    check_method: "网络拓扑分析"
+    pass_criteria: "仅通过0Ω电阻或磁珠单点连接"
+  FMEA_019:
+    name: "高压网络爬电距离是否满足安规要求"
+    weight: P0
+    check_method: "爬电距离计算"
+    pass_criteria: "满足安规标准"
+  FMEA_020:
+    name: "高压网络电气间隙是否满足安规要求"
+    weight: P0
+    check_method: "电气间隙计算"
+    pass_criteria: "满足安规标准"
+  FMEA_021:
+    name: "板边连接器是否有ESD/TVS保护"
+    weight: P0
+    check_method: "电路拓扑检查"
+    pass_criteria: "有ESD保护器件"
+  FMEA_003:
+    name: "电源/地平面分割是否合理"
+    weight: P1
+    check_method: "平面分析"
+    pass_criteria: "避免瓶颈,载流能力满足要求"
+  FMEA_004:
+    name: "电源网络是否有足够的滤波电容组合"
+    weight: P1
+    check_method: "频谱分析"
+    pass_criteria: "大电容+小电容组合覆盖宽频段"
+  FMEA_010:
+    name: "时钟信号是否包地保护"
+    weight: P1
+    check_method: "走线检查"
+    pass_criteria: "时钟走线两侧有地线保护"
+  FMEA_012:
+    name: "晶振下方是否有完整地平面"
+    weight: P1
+    check_method: "参考层检查"
+    pass_criteria: "有完整地平面"
+  FMEA_013:
+    name: "高频/脆弱信号是否回路面积最小"
+    weight: P1
+    check_method: "回路分析"
+    pass_criteria: "回路面积最小化"
+  FMEA_016:
+    name: "板边是否预留了接地屏蔽铜箔"
+    weight: P1
+    check_method: "板边检查"
+    pass_criteria: "板边有接地铜箔环"
+  FMEA_018:
+    name: "I/O接口是否有滤波措施"
+    weight: P1
+    check_method: "电路检查"
+    pass_criteria: "有EMI滤波或磁珠"
+  FMEA_022:
+    name: "散热设计是否合理"
+    weight: P1
+    check_method: "散热分析"
+    pass_criteria: "大功率器件有散热措施"
+  FMEA_023:
+    name: "PCB热膨胀系数(CTE)是否与元件匹配"
+    weight: P1
+    check_method: "材料参数比对"
+    pass_criteria: "差异≤15ppm/℃"
+  FMEA_024:
+    name: "整体散热是否均衡"
+    weight: P1
+    check_method: "热分析"
+    pass_criteria: "无局部热点"
+  FMEA_017:
+    name: "高频信号是否走内层"
+    weight: P2
+    check_method: "走线层检查"
+    pass_criteria: "高频信号走内层"
+  FMEA_014:
+    name: "关键信号是否有多余过孔和绕线"
+    weight: P2
+    check_method: "走线检查"
+    pass_criteria: "尽量减少过孔和绕线"
+
+# ============================================================
+# 七、可测试性设计 DFT (11 项: 全部 P1)
+# ============================================================
+category_7_design_for_test:
+  DFT_001:
+    name: "测试点直径是否≥0.8mm"
+    weight: P1
+    check_method: "尺寸测量"
+    pass_criteria: "≥0.8mm"
+  DFT_002:
+    name: "测试点间距是否≥1.5mm"
+    weight: P1
+    check_method: "间距检测"
+    pass_criteria: "≥1.5mm"
+  DFT_003:
+    name: "测试点与元件间距是否≥1.27mm"
+    weight: P1
+    check_method: "间距检测"
+    pass_criteria: "≥1.27mm(避免探针干涉)"
+  DFT_004:
+    name: "关键信号网络测试点覆盖率是否达标"
+    weight: P1
+    check_method: "覆盖率计算"
+    pass_criteria: "ICT覆盖率≥85-90%"
+  DFT_005:
+    name: "所有电源网络是否有测试点"
+    weight: P1
+    check_method: "网络覆盖检查"
+    pass_criteria: "电源网络100%可测"
+  DFT_006:
+    name: "所有地网络是否有测试点"
+    weight: P1
+    check_method: "网络覆盖检查"
+    pass_criteria: "地网络100%可测"
+  DFT_007:
+    name: "测试点是否位于三防漆覆盖区域外"
+    weight: P1
+    check_method: "区域检查"
+    pass_criteria: "测试点不在三防漆下"
+  DFT_008:
+    name: "FCT功能测试接口是否设计合理"
+    weight: P1
+    check_method: "接口检查"
+    pass_criteria: "功能测试接口已预留"
+  DFT_009:
+    name: "烧录接口位置是否方便操作"
+    weight: P1
+    check_method: "可操作性检查"
+    pass_criteria: "烧录接口便于操作"
+  DFT_010:
+    name: "AOI检测器件周围是否有足够空间"
+    weight: P1
+    check_method: "空间检查"
+    pass_criteria: "BGA/QFN/0402以下有足够检测空间"
+  DFT_011:
+    name: "ICT测试治具需求是否已明确"
+    weight: P1
+    check_method: "需求文档"
+    pass_criteria: "治具需求已定义"
+
+# ============================================================
+# 八、BOM与供应链管理 (7 项: P0=3, P1=3, P2=1)
+# ============================================================
+category_8_bom_supply_chain:
+  BOM_001:
+    name: "BOM是否包含所有必需字段"
+    weight: P0
+    check_method: "字段检查"
+    pass_criteria: "位号/描述/封装/规格/数量/MPN"
+  BOM_002:
+    name: "是否存在未分配MPN的项目"
+    weight: P0
+    check_method: "MPN字段检查"
+    pass_criteria: "除DNP外均有有效MPN"
+  BOM_007:
+    name: "BOM版本号是否与设计图纸同步"
+    weight: P0
+    check_method: "版本比对"
+    pass_criteria: "版本号一致"
+  BOM_004:
+    name: "关键IC是否有替代供应商"
+    weight: P1
+    check_method: "供应风险评估"
+    pass_criteria: "至少有1个P2P替代或注明风险"
+  BOM_005:
+    name: "是否有EOL(停产)风险物料"
+    weight: P1
+    check_method: "生命周期查询"
+    pass_criteria: "无EOL或已备替代方案"
+  BOM_003:
+    name: "BOM中物料架构是否与工艺路线一致"
+    weight: P1
+    check_method: "工艺路线对照"
+    pass_criteria: "无跨工序物料混淆"
+  BOM_006:
+    name: "长交期物料是否已识别"
+    weight: P2
+    check_method: "交期评估"
+    pass_criteria: "长交期物料已标注"
+
+# ============================================================
+# 九、丝印与标识 (8 项: P0=2, P1=5, P2=1)
+# ============================================================
+category_9_silkscreen:
+  SILK_002:
+    name: "丝印是否覆盖焊盘/测试点"
+    weight: P0
+    check_method: "重叠检测"
+    pass_criteria: "无丝印覆盖功能性焊盘"
+  SILK_001:
+    name: "元件位号字体高度是否≥0.8mm"
+    weight: P1
+    check_method: "尺寸测量"
+    pass_criteria: "≥0.8mm"
+  SILK_003:
+    name: "丝印与焊盘间距是否≥0.15mm"
+    weight: P1
+    check_method: "间距检测"
+    pass_criteria: "≥0.15mm"
+  SILK_004:
+    name: "极性标识是否冗余标注"
+    weight: P1
+    check_method: "标识检查"
+    pass_criteria: "极性有冗余标识"
+  SILK_006:
+    name: "LOGO及功能说明丝印是否清晰完整"
+    weight: P1
+    check_method: "可视性检查"
+    pass_criteria: "清晰完整/位置醒目"
+  SILK_008:
+    name: "一脚标识及位号是否规范"
+    weight: P1
+    check_method: "标识检查"
+    pass_criteria: "准确清晰/排版规整"
+  SILK_007:
+    name: "丝印高度是否≤0.1mm"
+    weight: P2
+    check_method: "高度测量"
+    pass_criteria: "≤0.1mm(避免影响焊接)"
+
+# ============================================================
+# 十、光学定位点 Fiducial Mark (5 项: P0=1, P1=4)
+# ============================================================
+category_10_fiducial_marks:
+  FID_001:
+    name: "有贴片器件的面是否添加了Mark点"
+    weight: P0
+    check_method: "Mark点检查"
+    pass_criteria: "有贴片器件的面必须有"
+  FID_002:
+    name: "全局Mark点数量是否≥3个"
+    weight: P1
+    check_method: "数量检查"
+    pass_criteria: "≥3个"
+  FID_003:
+    name: "局部Mark点是否在BGA/QFP等精密器件附近添加"
+    weight: P1
+    check_method: "位置检查"
+    pass_criteria: "精密器件附近有局部Mark点"
+  FID_004:
+    name: "Mark点位置是否合理"
+    weight: P1
+    check_method: "位置检查"
+    pass_criteria: "位于板角,无遮挡"
+  FID_005:
+    name: "Mark点是否符合尺寸标准"
+    weight: P1
+    check_method: "尺寸检查"
+    pass_criteria: "标准尺寸(通常1mm直径)"
+
+# ============================================================
+# 十一、设计输出与制版资料 (7 项: P0=4, P1=3)
+# ============================================================
+category_11_output_files:
+  OUT_001:
+    name: "Gerber压缩包是否包含所有层"
+    weight: P0
+    check_method: "文件清单检查"
+    pass_criteria: "电气层/阻焊层/丝印层/钻孔层齐全"
+  OUT_002:
+    name: "钻孔文件是否包含过孔与通孔数据"
+    weight: P0
+    check_method: "文件解析"
+    pass_criteria: ".drl或.xln文件存在且可解析"
+  OUT_003:
+    name: "NC Route层与钻孔层是否对位一致"
+    weight: P0
+    check_method: "层间比对"
+    pass_criteria: "层参数与位置完全一致"
+  OUT_007:
+    name: "版本号与设计图纸是否严格同步"
+    weight: P0
+    check_method: "版本比对"
+    pass_criteria: "版本号一致"
+  OUT_004:
+    name: "测试点报告是否生成"
+    weight: P1
+    check_method: "文件检查"
+    pass_criteria: "测试点坐标文件存在"
+  OUT_005:
+    name: "阻抗测试条(Coupon)是否添加"
+    weight: P1
+    check_method: "板边检查"
+    pass_criteria: "板边有阻抗测试条"
+  OUT_006:
+    name: "钻孔表(Drill Chart)是否提供"
+    weight: P1
+    check_method: "文件检查"
+    pass_criteria: "钻孔规格表完整"
+
+# ============================================================
+# 十二、评审结论与跟踪 (6 项: P0=2, P1=3, P2=1)
+# ============================================================
+category_12_review_conclusion:
+  FINAL_001:
+    name: "所有P0项是否全部通过"
+    weight: P0
+    check_method: "逐项确认"
+    pass_criteria: "100%通过"
+  FINAL_006:
+    name: "评审结论是否明确(通过/有条件通过/不通过)"
+    weight: P0
+    check_method: "结论输出"
+    pass_criteria: "结论明确"
+  FINAL_002:
+    name: "所有P1项是否全部通过"
+    weight: P1
+    check_method: "逐项确认"
+    pass_criteria: "100%通过或已记录豁免"
+  FINAL_004:
+    name: "关键风险项是否已总结"
+    weight: P1
+    check_method: "风险报告"
+    pass_criteria: "高风险项已列出并制定对策"
+  FINAL_005:
+    name: "整改责任人是否明确"
+    weight: P1
+    check_method: "责任分配"
+    pass_criteria: "问题项有责任人"
+  FINAL_003:
+    name: "P2项是否已评估并记录决策"
+    weight: P2
+    check_method: "评估记录"
+    pass_criteria: "每项有通过/豁免记录"
+
+# ============================================================
+# 自举完善机制 — 豁免记录
+# ============================================================
+bootstrap_exceptions:
+  description: "当用户对任何FAIL项进行豁免时, AI必须记录"
+  required_fields:
+    - date: "豁免日期 YYYY-MM-DD"
+    - overridden_item: "被豁免项ID"
+    - user_justification: "豁免理由"
+    - ai_action: "AI采取的补偿措施"
+    - long_term_action: "是否将豁免转化为规则更新"
+  log: []  # 初始为空, 每次豁免追加
+
+# ============================================================
+# 使用方法
+# ============================================================
+usage:
+  step_1: "AI 在每次 PCBA 设计审查结束时, 必须逐项遍历并输出每项状态"
+  step_2: "状态枚举: PASS / FAIL / N/A / WAIVED"
+  step_3: "最终给出明确的验收结论: APPROVED / CONDITIONAL / REJECTED"
+  step_4: "FAIL 项必须有: 原因 + 整改建议 + 责任人 + 截止时间"
+  step_5: "WAIVED 项必须有: 豁免理由 + bootstrap_exceptions 记录"
+
+review_report_template: |
+  # PCBA 设计审查报告
+  - 项目: {project_name}
+  - 版本: {version}
+  - 审查日期: {date}
+  - 审查范围: {scope}
+  - 审查工具: KiCad 10.0.4 + 自动审查脚本
+
+  ## 总体结论: {APPROVED | CONDITIONAL | REJECTED}
+
+  ## 统计:
+  - P0 项: {P0_pass}/{P0_total} ({P0_rate}%)
+  - P1 项: {P1_pass}/{P1_total} ({P1_rate}%)
+  - P2 项: {P2_pass}/{P2_total} ({P2_rate}%)
+
+  ## FAIL 项清单 (待整改):
+  | ID | 名称 | 权重 | 原因 | 整改建议 | 责任人 | 截止 |
+  |----|------|------|------|----------|--------|------|
+
+  ## WAIVED 项清单 (已豁免):
+  | ID | 名称 | 权重 | 豁免理由 | 补偿措施 |
+  |----|------|------|----------|----------|
+
+  ## 关键风险:
+  {high_risk_items}

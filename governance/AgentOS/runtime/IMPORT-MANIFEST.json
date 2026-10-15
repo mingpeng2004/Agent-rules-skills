@@ -1,0 +1,38 @@
+{
+  "schema": "agentos-import-manifest-v1",
+  "agentos_version": "1.4.0",
+  "required_files": [
+    "runtime\\AGENT-IMPORT.md",
+    "runtime\\BOOT.md",
+    "constitution\\AGENTOS-CONSTITUTION.md",
+    "protocols\\TRUTH-AND-EVIDENCE.md",
+    "protocols\\TASK-PROTOCOL.md",
+    "protocols\\RECURSIVE-PLANNING.md",
+    "protocols\\CONTEXT-PIPELINE.md",
+    "protocols\\HARNESS-ENHANCEMENTS.md",
+    "protocols\\LONG-HORIZON.md",
+    "protocols\\QUALITY-GATE.md",
+    "protocols\\MEMORY.md",
+    "profiles\\EMBEDDED.md",
+    "protocols\\DELEGATED-AUTONOMY.md",
+    "policies\\DECISION-POLICY.json",
+    "protocols\\UPFRONT-CONFIRMATION.md",
+    "protocols\\DESIGN-CONSISTENCY.md",
+    "policies\\INTERACTION-POLICY.json",
+    "bin\\AgentOS-Contract.ps1",
+    "protocols\\SKILL-MATRIX.md",
+    "policies\\SKILL-REGISTRY.json",
+    "bin\\agentos_skills.py",
+    "skills\\production-skill-routing\\SKILL.md"
+  ],
+  "project_required_files": [
+    "AGENTS.md",
+    ".agentos\\project.json",
+    ".agentos\\status.json",
+    ".agentos\\evidence\\claims.jsonl"
+  ],
+  "material_claim_rule": "No source means no verified fact.",
+  "synthetic_data_rule": "Synthetic data must be labeled and cannot satisfy real-world gates.",
+  "conflict_rule": "Conflicting evidence blocks delivery until resolved.",
+  "confirmation_rule": "Framework-level domains require explicit user confirmation; preference tier may default after 300 s; contract recorded in .agentos/contract."
+}

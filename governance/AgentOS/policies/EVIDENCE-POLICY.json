@@ -1,0 +1,104 @@
+{
+  "schema": "agentos-evidence-policy-v1",
+  "agentos_version": "1.2.0",
+  "ledger_relative_path": ".agentos\\evidence\\claims.jsonl",
+  "allowed_statuses": [
+    "verified",
+    "observed",
+    "derived",
+    "user-stated",
+    "assumption",
+    "proposal",
+    "synthetic",
+    "unknown",
+    "conflicted",
+    "stale"
+  ],
+  "source_types": [
+    "file",
+    "command",
+    "test",
+    "device",
+    "user",
+    "url",
+    "model",
+    "synthetic",
+    "none"
+  ],
+  "data_classes": [
+    "real",
+    "synthetic",
+    "mixed",
+    "unknown"
+  ],
+  "evidence_levels": [
+    "E0",
+    "E1",
+    "E2",
+    "E3",
+    "E4"
+  ],
+  "minimum_level_by_applicability": {
+    "static": "E1",
+    "unit": "E2",
+    "compile": "E2",
+    "integration": "E3",
+    "simulation": "E3",
+    "hardware_in_loop": "E3",
+    "performance": "E3",
+    "long_run": "E3",
+    "real_device": "E4",
+    "user_acceptance": "E4",
+    "safety": "E4"
+  },
+  "verified_requirements": {
+    "source_required": true,
+    "validation_method_required": true,
+    "artifact_hash_required_when_artifact_exists": true,
+    "disallowed_source_types": [
+      "none",
+      "model",
+      "user",
+      "synthetic"
+    ],
+    "disallowed_data_classes": [
+      "synthetic"
+    ],
+    "stale_blocks": true,
+    "conflict_blocks": true
+  },
+  "high_risk": {
+    "applicabilities": [
+      "real_device",
+      "user_acceptance",
+      "safety",
+      "performance",
+      "long_run"
+    ],
+    "independent_evidence_count": 2,
+    "primary_source_allowed": true
+  },
+  "freshness_required_source_types": [
+    "command",
+    "test",
+    "device",
+    "url"
+  ],
+  "synthetic_never_satisfies": [
+    "real_device",
+    "user_acceptance",
+    "safety",
+    "performance",
+    "production"
+  ],
+  "command_evidence": {
+    "complete_output_artifact_required": true,
+    "failure_timeout_or_truncation_status": "unknown"
+  },
+  "immutability": {
+    "format": "append-only-jsonl",
+    "correction": "append-event",
+    "rewrite_history": false
+  }
+}
+

@@ -1,0 +1,38 @@
+{
+  "agentos_version": "1.2.0",
+  "policy_id": "approval-scope-v1",
+  "default_scope": "session",
+  "session_ttl_minutes": 480,
+  "task_ttl_minutes": 240,
+  "persistent_scope_allowed": false,
+  "normal_operations": [
+    "read",
+    "edit_code",
+    "run_tests",
+    "build",
+    "inspect_logs",
+    "update_agentos_state"
+  ],
+  "always_single_approval": [
+    "delete_user_data",
+    "credentials",
+    "external_network",
+    "install_dependency",
+    "service_or_scheduled_task",
+    "remote_host",
+    "real_hardware_motion",
+    "firmware_flash",
+    "power_or_safety_control",
+    "modify_bios",
+    "paid_purchase",
+    "irreversible_change",
+    "change_security_boundary"
+  ],
+  "audit_directory": ".agentos/approvals",
+  "ordinary_work": "Proceed under existing user task delegation without ceremonial confirmation.",
+  "preference_policy": "policies/DECISION-POLICY.json",
+  "preference_wait_seconds": 300,
+  "safety_timeout_allowed": false,
+  "revocation": "close session, expire TTL, revoke grant file, or change project policy",
+  "client_boundary": "This policy governs AgentOS behavior and wrappers. It cannot add buttons to a client that exposes no session-scoped approval API."
+}

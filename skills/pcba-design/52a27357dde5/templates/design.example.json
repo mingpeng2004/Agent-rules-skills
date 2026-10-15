@@ -1,0 +1,750 @@
+{
+  "meta": {
+    "project": "CS5552_CONN_BD_v7",
+    "board_name": "CS5552-CONNECT-BD",
+    "version": "V1.1",
+    "author": "PCBA Skill v5.0 (AI 闭环实测)",
+    "date": "2026-07-20"
+  },
+  "dfm_profile": "jlc_2layer",
+  "rules": {
+    "clearance_mm": 0.15,
+    "min_track_mm": 0.127,
+    "copper_edge_clearance_mm": 0.3,
+    "hole_clearance_mm": 0.25
+  },
+  "board": {
+    "width_mm": 30.0,
+    "height_mm": 20.0,
+    "thickness_mm": 1.6,
+    "layers": 2,
+    "keepouts": [
+      {
+        "id": "KO_H1_5mm",
+        "shape": "circle",
+        "cx": 11.5,
+        "cy": 6.5,
+        "r": 5.0,
+        "exempt": [
+          "H1"
+        ],
+        "rule": "PRD: 固定孔 5mm 留空（焊盘中心到孔心 ≥5mm）"
+      },
+      {
+        "id": "KO_H2_5mm",
+        "shape": "circle",
+        "cx": 11.5,
+        "cy": -6.5,
+        "r": 5.0,
+        "exempt": [
+          "H2"
+        ],
+        "rule": "PRD: 固定孔 5mm 留空（焊盘中心到孔心 ≥5mm）"
+      }
+    ]
+  },
+  "components": [
+    {
+      "ref": "J1",
+      "footprint": "Connector_JST:JST_GH_BM06B-GHS-TBT_1x06-1MP_P1.25mm_Vertical",
+      "symbol": "Connector_Generic:Conn_01x06",
+      "value": "GH1.25-6PWBPZ",
+      "lcsc": "C262522",
+      "x": -9.5,
+      "y": 1.0,
+      "rotation": 90,
+      "layer": "F"
+    },
+    {
+      "ref": "J2",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical",
+      "symbol": "Connector_Generic:Conn_01x06",
+      "value": "HDR-1x06-2.54",
+      "lcsc": "",
+      "x": -6.35,
+      "y": -8.3,
+      "rotation": 90,
+      "layer": "F"
+    },
+    {
+      "ref": "C1",
+      "footprint": "Capacitor_SMD:C_0805_2012Metric",
+      "value": "10uF/16V",
+      "lcsc": "C15849",
+      "x": -4.0,
+      "y": -2.0,
+      "rotation": 0,
+      "layer": "F"
+    },
+    {
+      "ref": "C2",
+      "footprint": "Capacitor_SMD:C_0603_1608Metric",
+      "value": "100nF/50V",
+      "lcsc": "C14663",
+      "x": -4.4,
+      "y": -4.0,
+      "rotation": 0,
+      "layer": "F"
+    },
+    {
+      "ref": "R1",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "value": "22R/1%",
+      "lcsc": "C25090",
+      "x": -1.5,
+      "y": 1.8,
+      "rotation": 90,
+      "layer": "F"
+    },
+    {
+      "ref": "R2",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "value": "22R/1%",
+      "lcsc": "C25090",
+      "x": 0.0,
+      "y": 0.0,
+      "rotation": 90,
+      "layer": "F"
+    },
+    {
+      "ref": "R3",
+      "footprint": "Resistor_SMD:R_0603_1608Metric",
+      "value": "22R/1%",
+      "lcsc": "C25090",
+      "x": 1.5,
+      "y": -2.0,
+      "rotation": 90,
+      "layer": "F"
+    },
+    {
+      "ref": "H1",
+      "footprint": "MountingHole:MountingHole_2.5mm_Pad",
+      "symbol": "Mechanical:MountingHole",
+      "value": "M2.5-GND",
+      "x": 11.5,
+      "y": 6.5,
+      "rotation": 0,
+      "layer": "F"
+    },
+    {
+      "ref": "H2",
+      "footprint": "MountingHole:MountingHole_2.5mm_Pad",
+      "symbol": "Mechanical:MountingHole",
+      "value": "M2.5-GND",
+      "x": 11.5,
+      "y": -6.5,
+      "rotation": 0,
+      "layer": "F"
+    }
+  ],
+  "nets": [
+    {
+      "name": "+5V",
+      "class": "power",
+      "min_width_mm": 0.5,
+      "max_current_a": 1.0,
+      "pads": [
+        "J1.1",
+        "J2.1",
+        "C1.1",
+        "C2.1"
+      ]
+    },
+    {
+      "name": "GND",
+      "class": "power",
+      "copper": "zone",
+      "pads": [
+        "J1.2",
+        "J2.2",
+        "C1.2",
+        "C2.2",
+        "H1.1",
+        "H2.1"
+      ]
+    },
+    {
+      "name": "SPI_SCK",
+      "class": "signal",
+      "min_width_mm": 0.3,
+      "pads": [
+        "J1.3",
+        "R1.1"
+      ]
+    },
+    {
+      "name": "SPI_SCK_OUT",
+      "class": "signal",
+      "min_width_mm": 0.3,
+      "pads": [
+        "R1.2",
+        "J2.3"
+      ]
+    },
+    {
+      "name": "SPI_MOSI",
+      "class": "signal",
+      "min_width_mm": 0.3,
+      "pads": [
+        "J1.4",
+        "R2.1"
+      ]
+    },
+    {
+      "name": "SPI_MOSI_OUT",
+      "class": "signal",
+      "min_width_mm": 0.3,
+      "pads": [
+        "R2.2",
+        "J2.4"
+      ]
+    },
+    {
+      "name": "SPI_MISO",
+      "class": "signal",
+      "min_width_mm": 0.3,
+      "pads": [
+        "J1.5",
+        "R3.1"
+      ]
+    },
+    {
+      "name": "SPI_MISO_OUT",
+      "class": "signal",
+      "min_width_mm": 0.3,
+      "pads": [
+        "R3.2",
+        "J2.5"
+      ]
+    },
+    {
+      "name": "SPI_CS",
+      "class": "signal",
+      "min_width_mm": 0.3,
+      "pads": [
+        "J1.6",
+        "J2.6"
+      ]
+    }
+  ],
+  "vias": [
+    {
+      "net": "+5V",
+      "x": -8.6,
+      "y": 4.125,
+      "drill_mm": 0.3,
+      "size_mm": 0.6
+    },
+    {
+      "net": "+5V",
+      "x": -6.2,
+      "y": -2.0,
+      "drill_mm": 0.3,
+      "size_mm": 0.6
+    },
+    {
+      "net": "+5V",
+      "x": -6.2,
+      "y": -3.5,
+      "drill_mm": 0.3,
+      "size_mm": 0.6
+    },
+    {
+      "net": "GND",
+      "x": -6.1,
+      "y": 2.875,
+      "drill_mm": 0.3,
+      "size_mm": 0.6
+    },
+    {
+      "net": "GND",
+      "x": -3.2,
+      "y": -1.5,
+      "drill_mm": 0.3,
+      "size_mm": 0.6
+    },
+    {
+      "net": "GND",
+      "x": -3.0,
+      "y": -4.6,
+      "drill_mm": 0.3,
+      "size_mm": 0.6
+    },
+    {
+      "net": "SPI_SCK_OUT",
+      "x": -2.3,
+      "y": 0.9,
+      "drill_mm": 0.3,
+      "size_mm": 0.6
+    },
+    {
+      "net": "SPI_MOSI_OUT",
+      "x": 0.4,
+      "y": -1.1,
+      "drill_mm": 0.3,
+      "size_mm": 0.6
+    },
+    {
+      "net": "SPI_MISO_OUT",
+      "x": 2.3,
+      "y": -3.4,
+      "drill_mm": 0.3,
+      "size_mm": 0.6
+    }
+  ],
+  "routes": [
+    {
+      "net": "+5V",
+      "width_mm": 0.5,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "pad": "J1.1"
+        },
+        {
+          "x": -8.6,
+          "y": 4.125
+        }
+      ]
+    },
+    {
+      "net": "+5V",
+      "width_mm": 0.5,
+      "layer": "B.Cu",
+      "points": [
+        {
+          "x": -8.6,
+          "y": 4.125
+        },
+        {
+          "x": -8.6,
+          "y": -2.0
+        },
+        {
+          "x": -6.2,
+          "y": -2.0
+        }
+      ]
+    },
+    {
+      "net": "+5V",
+      "width_mm": 0.5,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "x": -6.2,
+          "y": -2.0
+        },
+        {
+          "pad": "C1.1"
+        }
+      ]
+    },
+    {
+      "net": "+5V",
+      "width_mm": 0.5,
+      "layer": "B.Cu",
+      "points": [
+        {
+          "x": -6.2,
+          "y": -2.0
+        },
+        {
+          "x": -6.2,
+          "y": -3.5
+        }
+      ]
+    },
+    {
+      "net": "+5V",
+      "width_mm": 0.5,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "x": -6.2,
+          "y": -3.5
+        },
+        {
+          "pad": "C2.1"
+        }
+      ]
+    },
+    {
+      "net": "+5V",
+      "width_mm": 0.5,
+      "layer": "B.Cu",
+      "points": [
+        {
+          "x": -6.2,
+          "y": -3.5
+        },
+        {
+          "x": -6.2,
+          "y": -7.9
+        },
+        {
+          "pad": "J2.1"
+        }
+      ]
+    },
+    {
+      "net": "GND",
+      "width_mm": 0.5,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "pad": "J1.2"
+        },
+        {
+          "x": -6.1,
+          "y": 2.875
+        }
+      ]
+    },
+    {
+      "net": "GND",
+      "width_mm": 0.5,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "pad": "C1.2"
+        },
+        {
+          "x": -3.2,
+          "y": -1.5
+        }
+      ]
+    },
+    {
+      "net": "GND",
+      "width_mm": 0.5,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "pad": "C2.2"
+        },
+        {
+          "x": -3.0,
+          "y": -4.6
+        }
+      ]
+    },
+    {
+      "net": "SPI_SCK",
+      "width_mm": 0.3,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "pad": "J1.3"
+        },
+        {
+          "x": -2.5,
+          "y": 1.625
+        },
+        {
+          "pad": "R1.1"
+        }
+      ]
+    },
+    {
+      "net": "SPI_SCK_OUT",
+      "width_mm": 0.3,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "pad": "R1.2"
+        },
+        {
+          "x": -2.3,
+          "y": 0.9
+        }
+      ]
+    },
+    {
+      "net": "SPI_SCK_OUT",
+      "width_mm": 0.3,
+      "layer": "B.Cu",
+      "points": [
+        {
+          "x": -2.3,
+          "y": 0.9
+        },
+        {
+          "x": -2.3,
+          "y": -6.5
+        },
+        {
+          "x": -1.27,
+          "y": -6.5
+        },
+        {
+          "pad": "J2.3"
+        }
+      ]
+    },
+    {
+      "net": "SPI_MOSI",
+      "width_mm": 0.3,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "pad": "J1.4"
+        },
+        {
+          "x": -6.8,
+          "y": 0.375
+        },
+        {
+          "x": -6.8,
+          "y": 0.2
+        },
+        {
+          "x": -0.9,
+          "y": 0.2
+        },
+        {
+          "pad": "R2.1"
+        }
+      ]
+    },
+    {
+      "net": "SPI_MOSI_OUT",
+      "width_mm": 0.3,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "pad": "R2.2"
+        },
+        {
+          "x": 0.4,
+          "y": -1.1
+        }
+      ]
+    },
+    {
+      "net": "SPI_MOSI_OUT",
+      "width_mm": 0.3,
+      "layer": "B.Cu",
+      "points": [
+        {
+          "x": 0.4,
+          "y": -1.1
+        },
+        {
+          "x": 0.4,
+          "y": -6.3
+        },
+        {
+          "x": 1.27,
+          "y": -6.3
+        },
+        {
+          "pad": "J2.4"
+        }
+      ]
+    },
+    {
+      "net": "SPI_MISO",
+      "width_mm": 0.3,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "pad": "J1.5"
+        },
+        {
+          "x": -0.8,
+          "y": -0.875
+        },
+        {
+          "x": -0.8,
+          "y": -1.7
+        },
+        {
+          "x": 1.5,
+          "y": -1.7
+        },
+        {
+          "pad": "R3.1"
+        }
+      ]
+    },
+    {
+      "net": "SPI_MISO_OUT",
+      "width_mm": 0.3,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "pad": "R3.2"
+        },
+        {
+          "x": 2.3,
+          "y": -3.4
+        }
+      ]
+    },
+    {
+      "net": "SPI_MISO_OUT",
+      "width_mm": 0.3,
+      "layer": "B.Cu",
+      "points": [
+        {
+          "x": 2.3,
+          "y": -3.4
+        },
+        {
+          "x": 2.3,
+          "y": -6.1
+        },
+        {
+          "x": 3.81,
+          "y": -6.1
+        },
+        {
+          "pad": "J2.5"
+        }
+      ]
+    },
+    {
+      "net": "SPI_CS",
+      "width_mm": 0.3,
+      "layer": "F.Cu",
+      "points": [
+        {
+          "pad": "J1.6"
+        },
+        {
+          "x": -7.55,
+          "y": -6.6
+        },
+        {
+          "x": 5.5,
+          "y": -6.6
+        },
+        {
+          "x": 5.5,
+          "y": -8.3
+        },
+        {
+          "pad": "J2.6"
+        }
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "net": "GND",
+      "layer": "B.Cu",
+      "margin_mm": 0.5,
+      "clearance_mm": 0.3
+    }
+  ],
+  "silkscreen": [
+    {
+      "text": "VCC",
+      "x": -6.35,
+      "y": -6.7,
+      "size_mm": 0.8
+    },
+    {
+      "text": "GND",
+      "x": -3.81,
+      "y": -6.7,
+      "size_mm": 0.8
+    },
+    {
+      "text": "SCK",
+      "x": -1.27,
+      "y": -6.7,
+      "size_mm": 0.8
+    },
+    {
+      "text": "MOSI",
+      "x": 1.27,
+      "y": -6.7,
+      "size_mm": 0.8
+    },
+    {
+      "text": "MISO",
+      "x": 3.81,
+      "y": -6.7,
+      "size_mm": 0.8
+    },
+    {
+      "text": "CS",
+      "x": 6.35,
+      "y": -6.7,
+      "size_mm": 0.8
+    },
+    {
+      "text": "CS5552-CONNECT-BD",
+      "x": -1.0,
+      "y": 5.9,
+      "size_mm": 1.0
+    },
+    {
+      "text": "V1.1 2026-07",
+      "x": -1.0,
+      "y": 9.3,
+      "size_mm": 0.8
+    },
+    {
+      "text": "1",
+      "x": -6.2,
+      "y": 4.125,
+      "size_mm": 0.8,
+      "rotation": 90
+    },
+    {
+      "text": "2",
+      "x": -6.2,
+      "y": 2.875,
+      "size_mm": 0.8,
+      "rotation": 90
+    },
+    {
+      "text": "3",
+      "x": -6.2,
+      "y": 1.625,
+      "size_mm": 0.8,
+      "rotation": 90
+    },
+    {
+      "text": "4",
+      "x": -6.2,
+      "y": 0.375,
+      "size_mm": 0.8,
+      "rotation": 90
+    },
+    {
+      "text": "5",
+      "x": -6.2,
+      "y": -0.875,
+      "size_mm": 0.8,
+      "rotation": 90
+    },
+    {
+      "text": "6",
+      "x": -6.2,
+      "y": -2.125,
+      "size_mm": 0.8,
+      "rotation": 90
+    },
+    {
+      "text": "J1: 1=VCC 2=GND 3=SCK",
+      "x": -1.0,
+      "y": 7.1,
+      "size_mm": 0.8
+    },
+    {
+      "text": "4=MOSI 5=MISO 6=CS",
+      "x": -1.0,
+      "y": 8.2,
+      "size_mm": 0.8
+    }
+  ],
+  "assembly": {
+    "require_fiducial": false,
+    "smd": true,
+    "note": "小板 30x20，Fiducial 由拼板工艺边承担"
+  }
+}

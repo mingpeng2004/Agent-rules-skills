@@ -1,0 +1,37 @@
+# ============================================================
+# 设计意图登记册模板 — 新项目复制后填写
+# 填写规则：
+#   - 硬约束：用户/法规明确给出的、不可妥协的项
+#   - G 指标：验收证书的唯一依据，每条必须有 量化目标/达成条件/验证方法/证据路径
+#   - EI 意图：工程层意图，映射到阶段门禁（P2~P6）
+# ============================================================
+
+project: <PROJECT_NAME>
+register_version: "1.0"
+created: "<YYYY-MM-DD>"
+authority: <需求文档路径>
+
+north_star:
+  id: NS
+  statement: <一句话核心价值>
+  hard_constraints:
+    - {id: NS-1, item: <约束名>, value: <量化值>, source: <来源>}
+    # 示例: {id: NS-1, item: 板尺寸, value: "20.0 x 22.0 mm", source: 用户确认 D16}
+
+acceptance_targets:
+  - id: G1
+    metric: <指标名>
+    target: <量化目标>
+    condition: <达成条件，含裕量说明>
+    verify_by: <测试方法/任务号>
+    evidence: <证据文件路径>
+    status: pending-test        # pending-test / conditional-pass / pass / highest-risk
+    # fallback: <不达标时的 Plan B（最高风险项必填）>
+  # G2~G5 同理；没有 5 项就写实际项数，但每项四要素齐全
+
+engineering_intent:
+  - id: EI-01
+    intent: <工程意图一句话>
+    verify: <如何验证>
+    gate: <P2 或 [P3, P4] 等>
+  # 至少覆盖：电源策略/隔离策略/去耦规则/引脚映射/同网多引脚连通/可制造间距/打样通路/组装通路

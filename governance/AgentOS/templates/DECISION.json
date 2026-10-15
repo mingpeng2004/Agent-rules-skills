@@ -1,0 +1,15 @@
+{
+  "task_id": "REPLACE_WITH_EXISTING_TASK_ID",
+  "title": "Ordinary preference requiring a choice",
+  "kind": "preference",
+  "recommendation": "Describe the complete recommended choice",
+  "scope": "Describe affected project modules and allowed actions",
+  "impact": "Describe behavior, compatibility and resource impact",
+  "rollback": "Describe a tested or feasible rollback",
+  "operations": ["implementation_choice", "edit_code", "run_tests"],
+  "facts_ready": false,
+  "reversible": false,
+  "within_user_goal": false,
+  "changes_security_boundary": true,
+  "fact_sources": ["REPLACE_WITH_PROJECT_RELATIVE_VERIFIED_SOURCE"]
+}

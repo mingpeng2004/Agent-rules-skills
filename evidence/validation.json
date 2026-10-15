@@ -1,0 +1,59 @@
+{
+  "source_record": "Private source/hash bindings retained locally; no raw project or device data published",
+  "scope": "Four stdlib learning/publishing source and test files; no Windows security changes",
+  "lesson_checks": [
+    "Denied access differs from empty result",
+    "Error signal cannot erase an existing artifact",
+    "New optional fields preserve old records"
+  ],
+  "tests_run": 16,
+  "actual_exit_code": 0,
+  "state": "passed",
+  "actual_test_log_sha256": "D3216C3BBE55776FC4BF942942F865FF0EAFE30886C604FD256D5DBF03DE5097",
+  "test_inputs": "Isolated synthetic fixtures including FakeAPI; not actual remote publication evidence",
+  "files": [
+    {
+      "summary": {
+        "warning": 0,
+        "info": 0,
+        "pass": true,
+        "critical": 0
+      },
+      "file": "lesson_checks.py"
+    },
+    {
+      "summary": {
+        "warning": 0,
+        "info": 0,
+        "pass": true,
+        "critical": 0
+      },
+      "file": "weekly_learning.py"
+    },
+    {
+      "summary": {
+        "warning": 0,
+        "info": 0,
+        "pass": true,
+        "critical": 0
+      },
+      "file": "test_lesson_checks.py"
+    },
+    {
+      "summary": {
+        "warning": 0,
+        "info": 0,
+        "pass": true,
+        "critical": 0
+      },
+      "file": "test_weekly_learning.py"
+    }
+  ],
+  "publish_failure_regressions": [
+    "Windows lock closes before cleanup",
+    "Other owner lock never removed",
+    "Large tree splits at 100 entries or 900KB",
+    "Unrelated remote contents preserved across multiple batches",
+    "Repeated same package creates no commit"
+  ]
+}

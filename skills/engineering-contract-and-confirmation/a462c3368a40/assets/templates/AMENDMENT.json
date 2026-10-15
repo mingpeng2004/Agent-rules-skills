@@ -1,0 +1,15 @@
+{
+  "amendment_id": "amend_001",
+  "kind": "contract",
+  "summary": "一句话说明新需求与为什么需要它",
+  "sections": {
+    "architecture": {
+      "decision": "该域新的确定结论",
+      "rationale": "依据"
+    }
+  },
+  "impact": "对用户/数据/接口/安全/运维的影响",
+  "rollback": "如何退回上一契约版本",
+  "fact_sources": ["docs/实际存在的支撑文件.md"],
+  "affected_tasks": ["task_057"]
+}

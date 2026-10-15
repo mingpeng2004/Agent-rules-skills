@@ -1,0 +1,162 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pcba-skill.local/design.schema.json",
+  "title": "PCBA Skill v5.0 design.json — 单一设计事实源",
+  "type": "object",
+  "required": ["meta", "board", "components", "nets"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["project", "board_name", "version"],
+      "properties": {
+        "project": {"type": "string", "desc": "文件名基（.kicad_pcb/.kicad_sch 同名）"},
+        "board_name": {"type": "string", "desc": "丝印板名（L-SLK-03 检查）"},
+        "version": {"type": "string", "desc": "丝印版本（L-SLK-03 检查）"},
+        "author": {"type": "string"},
+        "date": {"type": "string"}
+      }
+    },
+    "dfm_profile": {"type": "string", "enum": ["jlc_2layer", "jlc_4layer"], "default": "jlc_2layer"},
+    "rules": {
+      "type": "object",
+      "properties": {
+        "clearance_mm": {"type": "number", "default": 0.15, "desc": "默认网络类间距（写入 .kicad_pro）"},
+        "min_track_mm": {"type": "number", "default": 0.15},
+        "copper_edge_clearance_mm": {"type": "number", "default": 0.3},
+        "hole_clearance_mm": {"type": "number", "default": 0.25}
+      }
+    },
+    "board": {
+      "type": "object",
+      "required": ["width_mm", "height_mm"],
+      "properties": {
+        "width_mm": {"type": "number", "minimum": 5, "maximum": 500},
+        "height_mm": {"type": "number", "minimum": 5, "maximum": 500},
+        "thickness_mm": {"type": "number", "default": 1.6},
+        "layers": {"type": "integer", "enum": [2, 4], "default": 2},
+        "polygon": {"type": "array", "desc": "非矩形板框顶点 [[x,y],...]（缺省矩形）"},
+        "keepouts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {"type": "string"},
+              "shape": {"enum": ["circle", "rect"], "default": "rect"},
+              "cx": {"type": "number"}, "cy": {"type": "number"}, "r": {"type": "number"},
+              "x_min": {"type": "number"}, "y_min": {"type": "number"},
+              "x_max": {"type": "number"}, "y_max": {"type": "number"},
+              "exempt": {"type": "array", "items": {"type": "string"}, "desc": "豁免位号（如固定孔自身）"},
+              "rule": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["ref", "footprint", "value", "x", "y"],
+        "properties": {
+          "ref": {"type": "string", "pattern": "^[A-Z]+[0-9]+$"},
+          "footprint": {"type": "string", "desc": "KiCad 库路径 LibName:FootprintName（I-03 试加载验证）"},
+          "symbol": {"type": "string", "desc": "原理图符号 LibName:SymbolName（缺省按封装名推断）"},
+          "value": {"type": "string"},
+          "lcsc": {"type": "string", "desc": "LCSC 编号（BOM 输出；无则留空待确认）"},
+          "x": {"type": "number"}, "y": {"type": "number"},
+          "rotation": {"type": "number", "enum": [0, 90, 180, 270], "default": 0},
+          "layer": {"enum": ["F", "B"], "default": "F"}
+        }
+      }
+    },
+    "nets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "pads"],
+        "properties": {
+          "name": {"type": "string", "pattern": "^[A-Za-z0-9_+\\-./]+$"},
+          "class": {"enum": ["power", "signal", "clock", "diff"], "default": "signal"},
+          "min_width_mm": {"type": "number"},
+          "max_current_a": {"type": "number", "desc": "声明电流 → R-PWR-01 IPC-2221 校核"},
+          "copper": {"enum": ["track", "zone"], "default": "track", "desc": "zone=由铺铜承担"},
+          "pads": {"type": "array", "items": {"type": "string", "pattern": "^[A-Z]+[0-9]+\\.[0-9A-Z]+$"},
+                   "desc": "网络表：['J1.1','C1.1'] —— 建板时焊盘赋网（连通性根基）"}
+        }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["net", "width_mm", "points"],
+        "properties": {
+          "net": {"type": "string"},
+          "width_mm": {"type": "number"},
+          "layer": {"enum": ["F.Cu", "B.Cu"], "default": "F.Cu"},
+          "points": {
+            "type": "array", "minItems": 2,
+            "items": {
+              "oneOf": [
+                {"type": "object", "required": ["pad"], "properties": {"pad": {"type": "string"}},
+                 "desc": "端点吸附焊盘中心，杜绝 unconnected/短路"},
+                {"type": "object", "required": ["x", "y"],
+                 "properties": {"x": {"type": "number"}, "y": {"type": "number"}}}
+              ]
+            }
+          }
+        }
+      }
+    },
+    "vias": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["net", "x", "y"],
+        "properties": {
+          "net": {"type": "string"},
+          "x": {"type": "number"}, "y": {"type": "number"},
+          "drill_mm": {"type": "number", "default": 0.3},
+          "size_mm": {"type": "number", "default": 0.6}
+        }
+      }
+    },
+    "zones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["net"],
+        "properties": {
+          "net": {"type": "string"},
+          "layer": {"enum": ["F.Cu", "B.Cu"], "default": "B.Cu"},
+          "margin_mm": {"type": "number", "default": 0.5},
+          "clearance_mm": {"type": "number", "default": 0.3}
+        }
+      }
+    },
+    "silkscreen": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["text", "x", "y"],
+        "properties": {
+          "text": {"type": "string"},
+          "x": {"type": "number"}, "y": {"type": "number"},
+          "size_mm": {"type": "number", "default": 0.8, "minimum": 0.8},
+          "rotation": {"type": "number", "default": 0},
+          "layer": {"enum": ["F", "B", "F.SilkS", "B.SilkS"], "default": "F"}
+        }
+      }
+    },
+    "assembly": {
+      "type": "object",
+      "properties": {
+        "require_fiducial": {"type": "boolean", "default": false},
+        "smd": {"type": "boolean", "default": true},
+        "note": {"type": "string"}
+      }
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "lesson_records_inspected": 56,
+  "limits": "Source availability and portability inspection, not proof of every Skill's domain competence or future scheduler execution.",
+  "projects_inspected": 41,
+  "scan_issues": [
+    {
+      "source_id": "138f60c9d5ac",
+      "state": "skill_unreadable"
+    },
+    {
+      "source_id": "db49b18b7edf",
+      "state": "skill_unreadable"
+    },
+    {
+      "source_id": "2db66da0deee",
+      "state": "unreadable"
+    },
+    {
+      "source_id": "2db66da0deee",
+      "state": "unreadable"
+    },
+    {
+      "source_id": "2db66da0deee",
+      "state": "unreadable"
+    },
+    {
+      "source_id": "2db66da0deee",
+      "state": "unreadable"
+    },
+    {
+      "source_id": "2db66da0deee",
+      "state": "unreadable"
+    },
+    {
+      "source_id": "3729a9ea5b08",
+      "state": "unreadable"
+    },
+    {
+      "source_id": "3729a9ea5b08",
+      "state": "unreadable"
+    },
+    {
+      "source_id": "3729a9ea5b08",
+      "state": "unreadable"
+    },
+    {
+      "source_id": "6d9f855b8c21",
+      "state": "absent_at_scan"
+    },
+    {
+      "source_id": "8f943416982e",
+      "state": "absent_at_scan"
+    },
+    {
+      "source_id": "a762493a552b",
+      "state": "unreadable"
+    },
+    {
+      "source_id": "bbae7d3bfc3d",
+      "state": "unreadable"
+    },
+    {
+      "source_id": "ffae1afd4267",
+      "state": "absent_at_scan"
+    }
+  ],
+  "scope_complete": false,
+  "skill_sources": 505,
+  "states": {
+    "deduplicated": 67,
+    "exported": 416,
+    "quarantined": 5,
+    "reference_only": 17
+  }
+}

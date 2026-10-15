@@ -1,0 +1,19 @@
+{
+  "schema": "agentos-decision-policy-v1",
+  "agentos_version": "1.2.0",
+  "policy_id": "delegated-preference-default-v1",
+  "authority": "User delegation on 2026-10-09: notified non-safety choices default after five minutes without feedback.",
+  "preference_wait_seconds": 300,
+  "default_outcome": "delegated_default",
+  "eligible_kind": "preference",
+  "preference_operations": ["architecture_choice", "ux_choice", "naming_choice", "implementation_choice", "reversible_refactor"],
+  "blocked_kinds": ["safety", "missing_facts", "host_approval", "user_acceptance", "unknown"],
+  "requires_notification": true,
+  "requires_reversible_change": true,
+  "requires_verified_factual_basis": true,
+  "requires_existing_goal_scope": true,
+  "feedback_precedes_default": true,
+  "audit_directory": ".agentos/decisions",
+  "clock": "UTC wall clock; rollback blocks adoption; no production clock override",
+  "enforcement_boundary": "Local decision tool and imports; no client permission bypass, no authenticated user identity, no autonomous wakeup service."
+}

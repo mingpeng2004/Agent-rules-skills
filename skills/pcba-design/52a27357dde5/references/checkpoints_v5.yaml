@@ -1,0 +1,124 @@
+# ============================================================
+# PCBA Skill v5.0 — 检查点体系（checkpoints_v5.yaml）
+# 取代 acceptance_checklist_v3.yaml（199 项含大量假 PASS 硬编码）
+# 原则：每一项必须有明确的自动测量方法；测不了的标 MANUAL，禁止默认 PASS
+# 权重：P0=致命（一票否决） P1=严重（须显式豁免） P2=建议（记录不阻塞）
+# ============================================================
+version: "5.0"
+verdict_rule:
+  REJECTED: "任一 P0 = FAIL"
+  CONDITIONAL: "无 P0 FAIL，但有 P1 FAIL（须用户在交付物上签豁免）"
+  APPROVED: "无 P0/P1 FAIL（WARN/MANUAL/NA 允许，但须全部写入报告）"
+
+layers:
+
+  # ---------- E 环境门禁（每次会话起跑前） ----------
+  E:
+    script: scripts/kicad_env.py
+    checks:
+      - {id: E-01, weight: P0, desc: "kicad-cli 存在且版本 ≥ 8", method: "kicad-cli version"}
+      - {id: E-02, weight: P0, desc: "KiCad 自带 Python + pcbnew 可导入", method: "python -c 'import pcbnew'"}
+      - {id: E-03, weight: P0, desc: "封装库路径存在（KICAD_FOOTPRINT_LIB / 自动探测）", method: "os.path.isdir"}
+      - {id: E-04, weight: P0, desc: "符号库路径存在", method: "os.path.isdir"}
+      - {id: E-05, weight: P1, desc: "目标 footprint 全部可 FootprintLoad", method: "design_validate I-03"}
+
+  # ---------- I 输入门禁（design.json 落笔后、建板前） ----------
+  I:
+    script: scripts/design_validate.py
+    checks:
+      - {id: I-01, weight: P0, desc: "结构完整：meta/board/components/nets 必填字段", method: "JSON 结构校验"}
+      - {id: I-02, weight: P0, desc: "数值域合法：坐标 |v|≤500mm、板尺寸 1~500mm", method: "范围校验"}
+      - {id: I-03, weight: P0, desc: "每个 footprint 在 KiCad 库真实存在", method: "FootprintLoad 试加载"}
+      - {id: I-04, weight: P0, desc: "网络引用的焊盘编号 ≤ 封装实际焊盘数", method: "交叉核对"}
+      - {id: I-05, weight: P0, desc: "位号唯一、value 非空", method: "集合校验"}
+      - {id: I-06, weight: P0, desc: "网络名合法、布线网络全部已声明", method: "正则 + 集合差"}
+      - {id: I-07, weight: P1, desc: "BOM 每个购买件有 LCSC 编号或显式标注待确认", method: "MANUAL（联网时半自动）"}
+      - {id: I-08, weight: P1, desc: "封装与实物器件 pitch/本体尺寸一致（datasheet 核对）", method: "MANUAL（AI 读规格书核对）"}
+
+  # ---------- S 原理图门禁 ----------
+  S:
+    script: scripts/run_checks.py（内部调 kicad-cli sch erc）
+    checks:
+      - {id: S-ERC-01, weight: P0, desc: "kicad-cli sch erc 0 error", method: "真实 ERC（非模拟）"}
+      - {id: S-02, weight: P0, desc: "网络表与 PCB 一致（schematic-parity）", method: "kicad-cli pcb drc --schematic-parity（v5.1 纳入）"}
+      - {id: S-03, weight: P1, desc: "电源网络有去耦（每个 IC 电源脚就近 100nF）", method: "design.json nets 审查（AI）"}
+
+  # ---------- L 布局门禁（几何实测，非 DSL 估算） ----------
+  L:
+    script: scripts/run_checks.py
+    checks:
+      - {id: L-GEO-01, weight: P0, desc: "板框 Edge.Cuts 闭合（端点图每点度数=2）", method: "pcbnew 实测"}
+      - {id: L-GEO-02, weight: P0, desc: "板尺寸实测 == 设计值（±0.1mm）", method: "pcbnew 实测"}
+      - {id: L-KO-01,  weight: P0, desc: "禁布区无侵入（固定孔/连接器，支持圆形/矩形，按焊盘中心测距）", method: "pcbnew 实测"}
+      - {id: L-SLK-01, weight: P1, desc: "丝印字高 ≥0.8mm、线宽 ≥0.12mm", method: "pcbnew 实测"}
+      - {id: L-SLK-02, weight: P1, desc: "丝印不压焊盘（文本 bbox × 焊盘 bbox 相交检测）", method: "pcbnew 实测"}
+      - {id: L-SLK-03, weight: P1, desc: "板名 + 版本丝印标识", method: "文本扫描"}
+      - {id: L-CMP-01, weight: P1, desc: "元件焊盘到板边 ≥0.5mm（按焊盘 bbox，非位号文本）", method: "pcbnew 实测"}
+      - {id: L-04, weight: P1, desc: "连接器朝向/插拔空间合理", method: "V 层视觉复检（AI 看图）"}
+
+  # ---------- R 布线门禁 ----------
+  R:
+    script: scripts/run_checks.py
+    checks:
+      - {id: R-DRC-01, weight: P0, desc: "kicad-cli pcb drc 0 error", method: "真实 DRC（--refill-zones --save-board）"}
+      - {id: R-DRC-02, weight: P0, desc: "未连接对象 = 0（unconnected_items）", method: "真实 DRC"}
+      - {id: R-DRC-03, weight: P2, desc: "DRC warning 清零（silk 类可豁免但须记录）", method: "真实 DRC"}
+      - {id: R-WID-01, weight: P0, desc: "最小线宽 ≥ 工艺剖面限值", method: "pcbnew 逐网络实测"}
+      - {id: R-PWR-01, weight: P0, desc: "IPC-2221 载流校核（按 design.json 声明电流）", method: "公式计算 + 实测线宽"}
+      - {id: R-NET-01, weight: P0, desc: "design.json 声明网络全部有走线", method: "集合差"}
+      - {id: R-ZONE-01, weight: P1, desc: "GND 铺铜存在且已填充（GetFilledPolysList）", method: "pcbnew 实测"}
+      - {id: R-05, weight: P1, desc: "高速信号回流路径完整（GND 铺铜无被走线割断的孤岛）", method: "MANUAL/V 层视觉（v5.1 计划自动化）"}
+
+  # ---------- D DFM 工艺门禁 ----------
+  D:
+    script: scripts/run_checks.py（阈值来自 references/jlc_capabilities.yaml）
+    checks:
+      - {id: D-DRL-01, weight: P0, desc: "最小孔径 ≥ 0.2mm（机械钻）", method: "pcbnew 实测全部焊盘/过孔"}
+      - {id: D-DRL-02, weight: P1, desc: "孔环 ≥ 0.1mm（低于 0.05 板厂拒单）", method: "pcbnew 实测"}
+      - {id: D-FID-01, weight: P1, desc: "SMT 贴装 Fiducial ≥2（design.json 声明 require_fiducial 时强制）", method: "封装名扫描"}
+      - {id: D-04, weight: P1, desc: "板尺寸/层数在 JLC 经济型工艺范围内", method: "对照 jlc_capabilities.yaml"}
+      - {id: D-05, weight: P2, desc: "半孔/槽孔/阻抗等特殊工艺显式声明", method: "MANUAL"}
+
+  # ---------- O 输出门禁（不信导出日志，回读文件实测） ----------
+  O:
+    script: scripts/verify_output.py
+    checks:
+      - {id: O-01, weight: P0, desc: "Gerber 层齐全（Cu/Mask/Silk/Paste/Edge.Cuts，按层名）", method: "文件枚举"}
+      - {id: O-02, weight: P0, desc: "Excellon 钻孔：M48 头、刀具数、孔数、最小刀径", method: "文本解析"}
+      - {id: O-03, weight: P0, desc: "Edge_Cuts Gerber 坐标实测板尺寸 == 设计值", method: "Gerber 坐标解析"}
+      - {id: O-04, weight: P0, desc: "Gerber 头尾完整（%FS/%MO 头 + M02* 尾）", method: "文本校验"}
+      - {id: O-05, weight: P0, desc: "BOM ↔ PCB ↔ 贴片坐标三方 ref 一致", method: "三方集合比对"}
+      - {id: O-06, weight: P1, desc: "Gerber.zip 打包完整", method: "zip 内容核对"}
+      - {id: O-07, weight: P1, desc: "ORDER_README 下单参数齐全（层数/板厚/铜厚/阻焊/工艺）", method: "文件存在性 + AI 复核"}
+
+  # ---------- V 视觉门禁（AI 独有，机器 DRC 查不出的"看着不对"） ----------
+  V:
+    script: scripts/visual_review.py（渲染后 AI 逐张读图）
+    checks:
+      - {id: V-01, weight: P1, desc: "顶视图：布局合理、无元件重叠观感、连接器方向正确", method: "AI 视觉"}
+      - {id: V-02, weight: P1, desc: "底视图：铺铜完整、无意外孤岛、回流路径可见", method: "AI 视觉"}
+      - {id: V-03, weight: P1, desc: "丝印可读：无大面积重叠/裁切、极性与 Pin1 标识可见", method: "AI 视觉"}
+      - {id: V-04, weight: P2, desc: "3D 视角：无元件立体干涉、插拔空间合理", method: "AI 视觉"}
+
+  # ---------- ELEC 电气审查层（v5.1 新增：回答"上电能不能工作"） ----------
+  ELEC:
+    script: scripts/elec_review.py
+    checks:
+      - {id: E1-CONN, weight: P0, desc: "intent.connections 声明引脚对真实连通（BFS 穿透 nets+passthrough）", method: "图遍历连通性验证"}
+      - {id: E1-PINMAP, weight: P0, desc: "intent.pin_map 引脚功能表与实际网络一致（防 MOSI/MISO 接反）", method: "网络名-功能映射核对"}
+      - {id: E2-DECAP, weight: P0, desc: "去耦电容就位（距电源入口实测距离）", method: "几何实测"}
+      - {id: E2-TERM, weight: P1, desc: "串联端接阻值核对（时钟/高速线）", method: "值解析+容差"}
+      - {id: E3-SI, weight: P1, desc: "微带线特征阻抗估算（IPC-2141）+ 临界长度判定（Tr×vp/6）", method: "公式+实测线宽线长"}
+      - {id: E4-RETURN, weight: P0, desc: "回流路径：最长连续无铜缝隙 ≤1mm（≤50MHz）/ 铺铜孤岛=1", method: "走线逐段 0.2mm 采样 + HitTestFilledArea"}
+      - {id: E5-IRDROP, weight: P1, desc: "电源走线压降（1oz 铜实测几何，>3% FAIL）", method: "ρ·L/(w·t)×I 计算"}
+      - {id: E6-SPICE, weight: P2, desc: "ngspice 引擎自检（模拟电路仿真通路）", method: "ctypes 调 ngspice.dll 跑 .op 冒烟"}
+
+  # ---------- F 终审门禁 ----------
+  F:
+    script: 人工/AI 汇总（governance 对接）
+    checks:
+      - {id: F-01, weight: P0, desc: "E/I/S/L/R/D/O 全部门禁通过，无 P0 FAIL", method: "汇总 check_report.json + output_gate.json"}
+      - {id: F-02, weight: P0, desc: "PRD ✅ 清单逐条实测通过（映射到上述检查点，禁止凭感觉）", method: "AI 映射表"}
+      - {id: F-03, weight: P1, desc: "MANUAL 项全部有结论（不允许悬空）", method: "报告审查"}
+      - {id: F-04, weight: P1, desc: "交付物清单 + 版本一致（design.json/板文件/Gerber/README 同版本）", method: "AI 核对"}
+      - {id: F-05, weight: P1, desc: "治理文件更新（PROJECT_GOVERNANCE/status/decisions）", method: "宪法 §14/§15"}

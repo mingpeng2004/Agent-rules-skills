@@ -1,0 +1,6 @@
+interface:
+  display_name: "嵌入式与软件工程"
+  short_description: "跨平台工业级固件与配套软件开发，贯通需求、架构、调试、验证和可追溯交付"
+  default_prompt: "使用 $embedded-software-engineering 接管指定项目，核对治理与现状，映射目标、框架、计划和验收文件，按已批准范围自主完成开发、验证与工程交付，并保留真实验收边界。"
+policy:
+  allow_implicit_invocation: true

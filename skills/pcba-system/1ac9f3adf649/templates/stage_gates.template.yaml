@@ -1,0 +1,90 @@
+# ============================================================
+# 阶段门禁定义模板 — 新项目复制后按证据路径填写
+# exit_evidence: 该阶段通过必须落盘的文件（引擎核验存在 + 哈希）
+# checks: 声明式机器检查（可选），全部通过该门才 PASS
+#   - {type: text_contains, path: X, contains: "Y", desc: "..."}
+#   - {type: zip_contains, path: X, pattern: "Y", desc: "..."}
+#   - {type: file_empty, path: X, desc: "..."}
+#   - {type: command, run: "cmd", cwd: "dir", desc: "..."}   # 退出码必须为 0
+# pending_if_missing: true → 证据缺失时判 PENDING 而非 FAIL（仅末端验证阶段用）
+# ============================================================
+
+gates:
+  - id: P0
+    name: 设计意图评估
+    exit_evidence:
+      - {path: standards/design_intent.yaml, role: 权威源}
+    checklist: standards/checklists.md#C0
+
+  - id: P1
+    name: 选型锁定
+    entry: [P0 PASS]
+    exit_evidence:
+      - {path: <BOM 或 sourcing-lock 文件>, role: 权威源}
+      - {path: archive/datasheets/, role: 证据目录}
+    checklist: standards/checklists.md#C1
+
+  - id: P2
+    name: 原理图冻结
+    entry: [P1 PASS]
+    exit_evidence:
+      - {path: <工程.kicad_sch>, role: 权威源}
+      - {path: <ERC 报告>, role: 证据}
+    checklist: standards/checklists.md#C2
+
+  - id: P3
+    name: 布局冻结
+    entry: [P2 PASS]
+    exit_evidence:
+      - {path: <工程.kicad_pcb>, role: 权威源}
+      - {path: <布局检查报告>, role: 证据}
+    checklist: standards/checklists.md#C3
+
+  - id: P4
+    name: 布线闭合
+    entry: [P3 PASS]
+    exit_evidence:
+      - {path: <工程.kicad_pcb>, role: 权威源}
+      - {path: <DRC 报告 0 error>, role: 证据}
+    checks:
+      - {type: command, run: '<kicad-cli> pcb drc --exit-code-violations <工程.kicad_pcb>', desc: "DRC 0 违规"}
+    checklist: standards/checklists.md#C4
+
+  - id: P5
+    name: 制造发布
+    entry: [P4 PASS]
+    exit_evidence:
+      - {path: <mfg/Gerber.zip>, role: 交付物}
+      - {path: <mfg/ORDER_README.md>, role: 交付物}
+      - {path: outputs/release/release_manifest.json, role: 证据}
+    checks:
+      - {type: zip_contains, path: <mfg/Gerber.zip>, pattern: "In1_Cu", desc: "Gerber 含内层（按实际层数改）"}
+      - {type: text_contains, path: <mfg/ORDER_README.md>, contains: "<层数声明>", desc: "README 层数与 Gerber 一致"}
+    checklist: standards/checklists.md#C5
+
+  - id: P6
+    name: 组装发布
+    entry: [P5 PASS]
+    exit_evidence:
+      - {path: <mfg/BOM.csv>, role: 交付物}
+      - {path: <mfg/CPL.csv>, role: 交付物}
+    checks:
+      - {type: file_empty, path: <mfg/*_MISSING_LCSC.txt>, desc: "LCSC 料号 100% 覆盖"}
+    checklist: standards/checklists.md#C6
+
+  - id: P7
+    name: 验证落地
+    entry: [P6 PASS, 样机实测]
+    exit_evidence:
+      - {path: <测试报告 G1>, role: 证据}
+      - {path: <最终报告>, role: 交付物}
+    pending_if_missing: true
+    checklist: standards/checklists.md#C7
+
+invalidation_cascade:
+  design_intent 变更: [P0, P1, P2, P3, P4, P5, P6, P7]
+  原理图/网表变更:   [P2, P3, P4, P5, P6, P7]
+  封装/元件变更:     [P1, P3, P4, P5, P6, P7]
+  布局/布线变更:     [P3, P4, P5, P6, P7]
+  仅 Gerber 重导出:  [P5]
+  仅 BOM/CPL 变更:   [P6]

@@ -1,0 +1,6 @@
+interface:
+  display_name: "工程契约与前期定调"
+  short_description: "开工前一次性定调开发与软件框架，后续需求以修订迭代，用版本绑定与漂移检查保证长程任务不跑偏"
+  default_prompt: "使用 $engineering-contract-and-confirmation 在开工前把开发框架与软件框架一次性定调为可校验的契约，后续需求走修订迭代，并在每个 Unit 边界与恢复点执行漂移检查。"
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,69 @@
+# ============================================================
+# 嘉立创（JLCPCB）工艺能力参数 — PCBA Skill v5.0
+# 数据来源：https://jlcpcb.com/capabilities/pcb-capabilities（2026-07 核对）
+# 用途：run_checks.py 的 DFM 阈值；design.json 可用 dfm_profile 选择剖面
+# 注意：板厂参数会调整，下单前以官网为准并更新本文件
+# ============================================================
+
+profiles:
+
+  jlc_2layer:
+    name: "JLCPCB 2 层板（经济型）"
+    # ---- 板厂绝对极限（低于此值 = 拒单/加收） ----
+    min_track_width_mm: 0.09        # 3.5mil
+    min_clearance_mm: 0.09
+    min_hole_mm: 0.20               # 机械钻孔最小（激光孔 0.15 仅限 HDI）
+    min_annular_ring_mm: 0.05
+    min_slot_mm: 0.80               # 最小槽宽
+    min_silk_height_mm: 0.8         # 丝印最小字高（JLC 建议 ≥0.8）
+    min_silk_thickness_mm: 0.12
+    solder_mask_bridge_mm: 0.10     # 最小阻焊桥
+    copper_to_edge_mm: 0.30         # 铜到板边最小（V-cut 建议 0.4）
+    hole_to_copper_mm: 0.25
+    # ---- 设计余量（低于此值给 WARN，高于极限但不推荐） ----
+    design_track_width_mm: 0.127    # 5mil 起步，信号建议 0.15+
+    design_annular_ring_mm: 0.10
+    design_component_edge_mm: 0.50  # 元件焊盘到板边
+    power_track_1A_mm: 0.50         # 1oz 铜 1A 载流（IPC-2221 外层 ΔT=10°C）
+    # ---- 结构 ----
+    copper_weight_oz: 1.0
+    default_thickness_mm: 1.6
+    thickness_options_mm: [0.8, 1.0, 1.2, 1.6, 2.0]
+    max_size_mm: [480, 570]
+    # ---- 价格甜区 ----
+    sweet_spots:
+      note: "≤100x100mm 5 片打样最便宜；尺寸超 100mm 任一边价格跳档"
+
+  jlc_4layer:
+    name: "JLCPCB 4 层板"
+    min_track_width_mm: 0.09
+    min_clearance_mm: 0.09
+    min_hole_mm: 0.20
+    min_annular_ring_mm: 0.05
+    min_slot_mm: 0.80
+    min_silk_height_mm: 0.8
+    min_silk_thickness_mm: 0.12
+    solder_mask_bridge_mm: 0.10
+    copper_to_edge_mm: 0.30
+    hole_to_copper_mm: 0.25
+    design_track_width_mm: 0.127
+    design_annular_ring_mm: 0.10
+    design_component_edge_mm: 0.50
+    power_track_1A_mm: 0.40
+    copper_weight_oz: 1.0
+    default_thickness_mm: 1.6
+    thickness_options_mm: [1.0, 1.2, 1.6, 2.0]
+    max_size_mm: [480, 570]
+
+  jlc_smt_assembly:
+    name: "JLC SMT 贴片工艺"
+    min_package: "0201（经济型建议 ≥0402）"
+    fiducial_required: true         # 拼板工艺边上 ≥2 个 Mark 点
+    fiducial_diameter_mm: 1.0
+    fiducial_mask_open_mm: 2.0
+    component_to_edge_mm: 1.5       # 贴片元件到 V-cut 距离（JLC 建议）
+    panel_note: "小板（<50x50）建议拼板 + 工艺边，Mark 点放工艺边"
+
+# IPC-2221 外层载流速查（1oz 铜，ΔT=10°C）：
+#   0.5A → 0.19mm   1.0A → 0.38mm   2.0A → 0.83mm   3.0A → 1.30mm
+# 计算实现：run_checks.py ipc_required_width_mm()

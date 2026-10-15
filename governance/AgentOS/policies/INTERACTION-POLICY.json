@@ -1,0 +1,87 @@
+{
+  "schema": "agentos-interaction-policy-v1",
+  "agentos_version": "1.3.0",
+  "policy_id": "upfront-confirmation-v1",
+  "authority": "User request 2026-10-12: set the software framework and development framework once, up front, then iterate new requirements; keep design intent enforced across long-horizon tasks.",
+  "tiers": {
+    "contract": {
+      "label": "框架级定调",
+      "requires": "explicit_user_confirmation",
+      "timeout_allowed": false,
+      "recorded_as": "user_confirmed",
+      "domains": [
+        "product_goal",
+        "scope_and_non_goals",
+        "quality_bar",
+        "tech_stack",
+        "architecture",
+        "interfaces_contracts",
+        "data_and_storage",
+        "ui_and_interaction",
+        "safety_and_hardware",
+        "security_and_privacy",
+        "ops_and_maintenance",
+        "acceptance_and_delivery"
+      ],
+      "note": "Every domain must reach confirmed / not_applicable / deferred-with-owner-waiver before a contract can be sealed. Elapsed time never confirms these."
+    },
+    "preference": {
+      "label": "普通偏好",
+      "requires": "notified_recommendation",
+      "timeout_default_seconds": 300,
+      "timeout_outcome": "delegated_default",
+      "policy": "policies/DECISION-POLICY.json",
+      "note": "Mid-task detail choices inside confirmed contract sections. Never user_approved or user acceptance."
+    },
+    "routine": {
+      "label": "常规执行",
+      "requires": "confirmed_contract_or_existing_project_ssot",
+      "timeout_allowed": null,
+      "note": "Implementation details, tests, docs, refactors and formatting inside the confirmed contract. Proceed without asking."
+    }
+  },
+  "upfront_packet": {
+    "once_per_contract": true,
+    "batch_all_domains": true,
+    "reuse_existing_ssot": true,
+    "never_ask_what_files_already_decide": true,
+    "record_source_ref_required": true,
+    "unknown_stays_unknown": true,
+    "presentation": "One packet with recommended default per domain, scope, impact and rollback. Ask only unresolved domains."
+  },
+  "amendment": {
+    "kinds": ["contract", "preference"],
+    "contract_kind_requires_explicit_confirmation": true,
+    "preference_kind_uses_delegated_default": true,
+    "version_bump_on_apply": true,
+    "history_dir": ".agentos/contract/history",
+    "changed_sections_mark_dependent_tasks_stale": true
+  },
+  "drift_control": {
+    "task_binds_contract_version": true,
+    "stale_task_is_blocking": true,
+    "unbound_legacy_task_is_informational": true,
+    "check_points": ["unit_boundary", "resume", "before_contract_dependent_action"]
+  },
+  "design_consistency": {
+    "protocol": "protocols/DESIGN-CONSISTENCY.md",
+    "artifacts": ["DESIGN.md", "design-tokens.json"],
+    "external_reference_policy": "method_only_no_dependency",
+    "network_fetch_default": "forbidden_without_owner_approval",
+    "asset_license_must_be_recorded": true
+  },
+  "production_grade": {
+    "protocol": "protocols/QUALITY-GATE.md",
+    "rule": "Production-grade means the applicable evidence gate is green, not that more questions were asked."
+  },
+  "efficiency_rules": [
+    "Ask once, in one packet, before implementation starts.",
+    "Never re-ask a confirmed domain; reuse its recorded decision and source ref.",
+    "Seed domains from existing project SSOT instead of asking the user.",
+    "Unknown or project-specific domains stay unknown; they are not filled with plausible defaults.",
+    "Routine work inside the contract never triggers a confirmation.",
+    "Amendments are batched per requirement, not per file edit.",
+    "Verification runs once per deliverable with an independent check, not repeated self-assertion."
+  ],
+  "enforcement_boundary": "Local files, prompts and optional CLI. Same-permission agents can bypass them; there is no authenticated user channel and no client-native confirmation control."
+}

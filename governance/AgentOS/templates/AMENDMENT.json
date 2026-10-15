@@ -1,0 +1,16 @@
+{
+  "amendment_id": "amend_001",
+  "kind": "contract",
+  "summary": "One-line statement of the new requirement and why it is needed",
+  "sections": {
+    "architecture": {
+      "decision": "The new confirmed decision for this domain",
+      "rationale": "Why this is the right change",
+      "source_type": "user"
+    }
+  },
+  "impact": "What changes for users, data, interfaces, safety or operations",
+  "rollback": "How to return to the current contract version",
+  "fact_sources": ["docs/engineering/evidence/requirement.md"],
+  "affected_tasks": ["task_056"]
+}

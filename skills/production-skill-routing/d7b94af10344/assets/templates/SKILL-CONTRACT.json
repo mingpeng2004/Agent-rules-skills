@@ -1,0 +1,22 @@
+{
+  "id": "domain-method",
+  "domain": "H",
+  "group": "meta",
+  "availability": "candidate",
+  "provider": null,
+  "triggers": ["specific task phrase"],
+  "scenarios": ["Concrete task and intended consumer"],
+  "inputs": ["task", "goals", "constraints"],
+  "outputs": [{"id": "result", "format": "project-owned file", "purpose": "Expected usable deliverable"}],
+  "workflow": ["Read inputs", "Execute a scoped authorized Unit", "Verify and hand off evidence"],
+  "acceptance": ["Observable outcome and required evidence level"],
+  "failure_modes": [
+    {"failure": "Missing input", "response": "Obtain authoritative source"},
+    {"failure": "Failed verification", "response": "Retain failure and change path"},
+    {"failure": "Unsupported claim", "response": "Declare limit and escalate"}
+  ],
+  "upstream": [],
+  "downstream": [],
+  "resources": [],
+  "limits": "Candidate until method, provider and actual task evidence are reviewed."
+}
